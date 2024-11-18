@@ -1,25 +1,27 @@
-NAME = cube3d
+NAME	:= cube3d
 
-CC = gcc
+CC	:= gcc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS	:= -Wall -Wextra -Werror -Iheaders/
 
-SRCS = main.c
+MXFLAGS	:= -Lminilibx-linux -lmlx_Linux -lX11 -lXext
 
-OBJS = $(SRCS:.c=.o)
+SOURCE	:= src/*.c
 
-all: $(NAME)
+MLIBX	:= minilibx-linux/
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
+## LIBFT	:= libft/*.c
 
-$(OBJS): $(SRCS)
-	$(CC) $(CFLAGS) -c $(SRCS)
+all:
+	make -C $(MLIBX)
+	$(CC) $(CFLAGS) $(SOURCE) $(MXFLAGS) -o $(NAME)
+##  $(CC) $(CFLAGS) $(SOURCE) $(MXFLAGS) $(LIBFT) -o $(NAME)
 
 clean:
-	rm -f $(OBJS)
+	make clean -C $(MLIBX)
+	rm -rf *.o
 
-fclean:
-	rm -f $(NAME) $(OBJS)
+fclean: clean
+	rm -rf $(NAME)
 
-.PHONY: all clean
+re: fclean all
