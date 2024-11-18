@@ -1,17 +1,6 @@
-#include <mlx.h>
-#include <stdlib.h>
-#include <math.h>
-//#include "libft.h"
+#include "window.h"
 
-#define WIN_WIDTH 640
-#define WIN_HEIGHT 480
-
-typedef struct s_data {
-    void    *mlx_ptr;
-    void    *win_ptr;
-}               t_data;
-
-int close_window(t_data *data)
+int close_window(t_window *data)
 {
     mlx_destroy_window(data->mlx_ptr, data->win_ptr);
     exit(0);
@@ -20,12 +9,12 @@ int close_window(t_data *data)
 
 int main(void)
 {
-    t_data  data;
+    t_window  data;
 
     data.mlx_ptr = mlx_init();
     if (data.mlx_ptr == NULL)
         return (1);
-    data.win_ptr = mlx_new_window(data.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Wolfenstein 3D Clone");
+    data.win_ptr = mlx_new_window(data.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Giereczka");
     if (data.win_ptr == NULL)
     {
         free(data.mlx_ptr);
