@@ -1,27 +1,32 @@
 #include "window.h"
-
-int close_window(t_window *data)
-{
-    mlx_destroy_window(data->mlx_ptr, data->win_ptr);
-    exit(0);
-    return (0);
-}
+#include "game.h" // Dodajemy plik nagłówkowy, gdzie zdefiniujemy strukturę gry i podstawowe funkcje.
 
 int main(void)
 {
-    t_window  data;
+    t_game game;
 
-    data.mlx_ptr = mlx_init();
-    if (data.mlx_ptr == NULL)
+    // Inicjalizacja okna
+    game.window.mlx_ptr = mlx_init();
+    if (game.window.mlx_ptr == NULL)
         return (1);
-    data.win_ptr = mlx_new_window(data.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Giereczka");
-    if (data.win_ptr == NULL)
+    game.window.win_ptr = mlx_new_window(game.window.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Giereczka");
+    if (game.window.win_ptr == NULL)
     {
-        free(data.mlx_ptr);
+        free(game.window.mlx_ptr);
         return (1);
     }
 
-    mlx_hook(data.win_ptr, 17, 0, close_window, &data);
-    mlx_loop(data.mlx_ptr);
+    // Inicjalizacja danych gry
+    if (!init_game(&game)) // Funkcja do inicjalizacji gracza, mapy itp.
+    {
+        close_window(&game);
+        return (1);
+    }
+
+    // Ustawienie obsługi zdarzeń
+    mlx_loop_hook(game.window.mlx_ptr, render_frame, &game);
+    mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
+    mlx_loop(game.window.mlx_ptr);
+
     return (0);
 }

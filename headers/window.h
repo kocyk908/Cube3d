@@ -15,6 +15,4 @@ typedef struct s_window
     void    *win_ptr;
 }               t_window;
 
-int close_window(t_window *data);
-
 #endif
