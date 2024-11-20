@@ -1,5 +1,7 @@
 #include "cube3d.h"
 
+// sprawdzanie czy linia mapy jest okej
+// narazie raczej kwadratowa mapa do poprawy
 int is_valid_line(char *line)
 {
     size_t i;
@@ -23,21 +25,22 @@ int is_valid_line(char *line)
     return (1);
 }
 
-char **read_map(const char *file_path)
+char **read_map(char *file_path)
 {
-    int fd;
+    int     fd;
+    int     map_size;
+    char    **map;
+    char    *line;
+
+    map = NULL;
+    map_size = 0;
+    line = NULL;
 	fd = open(file_path, O_RDONLY);
     if (fd < 0)
     {
         perror("Error opening file");
         return (NULL);
     }
-
-    char **map;
-	map = NULL;
-    char *line;
-    int map_size;
-	map_size = 0;
     while ((line = get_next_line(fd)))
     {
         if (!is_valid_line(line))

@@ -1,9 +1,29 @@
 #include "cube3d.h"
 #include "game.h" // Dodajemy plik nagłówkowy, gdzie zdefiniujemy strukturę gry i podstawowe funkcje.
 
-int main(void)
+
+int main(int argc, char **argv)
 {
     t_game game;
+
+    //mapa////////////////////////
+    char **map;
+
+    map = NULL;
+    if (argc != 2)
+    {
+        printf("Usage: %s <map_file.cub>\n", argv[0]);
+        return 1;
+    }
+    map = read_map(argv[1]);
+    if (!map)
+    {
+        printf("Failed to read map.\n");
+        return (1);
+    }
+    free_map(map); //na później
+    //mapa////////////////////////
+
 
     // Inicjalizacja okna
     game.window.mlx_ptr = mlx_init();
