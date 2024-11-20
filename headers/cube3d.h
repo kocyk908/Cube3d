@@ -23,5 +23,6 @@ typedef struct s_window
 int is_valid_line(char *line);
 char **read_map(char *file_path);
 void free_map(char **map);
+int count_rows(char *file_path);
 
 #endif

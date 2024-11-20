@@ -15,7 +15,7 @@ typedef struct s_map {
     char *file_path; // Ścieżka do pliku z mapą
     int width;
     int height;
-    char **data; // Reprezentacja mapy (np. tablica znaków '1', '0')
+    char **board; // Reprezentacja mapy (np. tablica znaków '1', '0')
 } t_map;
 
 typedef struct s_game {
