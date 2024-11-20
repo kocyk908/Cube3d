@@ -7,21 +7,14 @@ int main(int argc, char **argv)
     t_game game;
 
     //mapa////////////////////////
-    char **map;
-
-    map = NULL;
     if (argc != 2)
     {
-        printf("Usage: %s <map_file.cub>\n", argv[0]);
-        return 1;
-    }
-    map = read_map(argv[1]);
-    if (!map)
-    {
-        printf("Failed to read map.\n");
+        printf("Usage: %s <map_file>\n", argv[0]);
         return (1);
     }
-    free_map(map); //na później
+    game.map.file_path = argv[1];
+
+    //free_map(map); //na później
     //mapa////////////////////////
 
 

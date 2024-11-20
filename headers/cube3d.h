@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef CUBE3D_H
+#define CUBE3D_H
 
 #define WIN_WIDTH 500
 #define WIN_HEIGHT 500
@@ -11,6 +11,8 @@
 #include <math.h>
 #include "get_next_line.h"
 #include "libft.h"
+
+#include "biblio_helper.h"
 
 typedef struct s_window
 {

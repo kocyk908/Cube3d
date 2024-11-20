@@ -12,6 +12,7 @@ typedef struct s_player {
 } t_player;
 
 typedef struct s_map {
+    char *file_path; // Ścieżka do pliku z mapą
     int width;
     int height;
     char **data; // Reprezentacja mapy (np. tablica znaków '1', '0')
