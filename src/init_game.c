@@ -11,7 +11,7 @@ int init_map(t_map *map)
     
     //z szerokością to nie wiem jak podejść póki co bo mapa nie musi być kwadratem chyba
     
-    //map->width = strlen(rows[0]);
+    map->width = strlen(map->board[0]);
     return (1);
 }
 
