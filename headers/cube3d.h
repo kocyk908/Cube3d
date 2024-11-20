@@ -5,9 +5,12 @@
 #define WIN_HEIGHT 500
 
 #include <mlx.h>
+#include <fcntl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-//#include "libft.h"
+#include "get_next_line.h"
+#include "libft.h"
 
 typedef struct s_window
 {

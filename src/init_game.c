@@ -2,42 +2,43 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Funkcja alokująca mapę
-int init_map(t_map *map) {
-    const char *rows[] = {
-        "1111111111",
-        "1000000001",
-        "1011111101",
-        "1010000101",
-        "1010110101",
-        "1010000101",
-        "1011111101",
-        "1000000001",
-        "1111111111",
-        NULL
-    };
+//// Funkcja alokująca mapę
+//int init_map(t_map *map) {
+//    const char *rows[] = {
+//        "1111111111",
+//        "1000000001",
+//        "1011111101",
+//        "1010000101",
+//        "1010110101",
+//        "1010000101",
+//        "1011111101",
+//        "1000000001",
+//        "1111111111",
+//        NULL
+//    };
 
-    int height = sizeof(rows) / sizeof(rows[0]) - 1; // Odejmujemy 1 dla NULL
-    map->data = malloc(sizeof(char *) * height);
-    if (!map->data)
-        return 0;
+//    int height = sizeof(rows) / sizeof(rows[0]) - 1; // Odejmujemy 1 dla NULL
+//    map->data = malloc(sizeof(char *) * height);
+//    if (!map->data)
+//        return 0;
 
-    for (int i = 0; i < height; i++) {
-        map->data[i] = strdup(rows[i]);
-        if (!map->data[i]) {
-            // W razie błędu zwalniamy wcześniej zaalokowaną pamięć
-            while (--i >= 0)
-                free(map->data[i]);
-            free(map->data);
-            return 0;
-        }
-    }
-    map->width = strlen(rows[0]);
-    map->height = height;
-    return 1;
-}
+//    for (int i = 0; i < height; i++) {
+//        map->data[i] = strdup(rows[i]);
+//        if (!map->data[i]) {
+//            // W razie błędu zwalniamy wcześniej zaalokowaną pamięć
+//            while (--i >= 0)
+//                free(map->data[i]);
+//            free(map->data);
+//            return 0;
+//        }
+//    }
+//    map->width = strlen(rows[0]);
+//    map->height = height;
+//    return 1;
+//}
 
-int init_game(t_game *game) {
+int init_game(t_game *game)
+{
     if (!init_map(&game->map))
         return 0;
 

@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "window.h"
+#include "cube3d.h"
 
 typedef struct s_player {
     double x;    // Pozycja X gracza

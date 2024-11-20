@@ -1,5 +1,5 @@
 #include "game.h"
-#include "window.h"
+#include "cube3d.h"
 
 int close_window(t_game *game)
 {

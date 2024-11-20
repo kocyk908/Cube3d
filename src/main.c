@@ -1,4 +1,4 @@
-#include "window.h"
+#include "cube3d.h"
 #include "game.h" // Dodajemy plik nagłówkowy, gdzie zdefiniujemy strukturę gry i podstawowe funkcje.
 
 int main(void)

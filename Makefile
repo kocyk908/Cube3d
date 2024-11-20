@@ -10,12 +10,13 @@ SOURCE	:= src/*.c
 
 MLIBX	:= minilibx-linux/
 
-## LIBFT	:= libft/*.c
+LIBFT	:= libft/*.c
+
+GNL := gnl/*.c
 
 all:
 	make -C $(MLIBX)
-	$(CC) $(CFLAGS) $(SOURCE) $(MXFLAGS) -o $(NAME)
-##  $(CC) $(CFLAGS) $(SOURCE) $(MXFLAGS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(SOURCE) $(GNL) $(LIBFT) $(MXFLAGS) -o $(NAME)
 
 clean:
 	make clean -C $(MLIBX)
