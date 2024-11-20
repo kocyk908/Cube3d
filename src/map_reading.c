@@ -25,16 +25,42 @@ int is_valid_line(char *line)
     return (1);
 }
 
+int count_rows(char *file_path)
+{
+    int fd;
+    int row_count;
+    char *line;
+
+    fd = open(file_path, O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error opening file");
+        return (-1);
+    }
+    row_count = 0;
+    while ((line = get_next_line(fd)))
+    {
+        row_count++;
+        free(line);
+    }
+    close(fd);
+    return (row_count);
+}
+
 char **read_map(char *file_path)
 {
     int     fd;
-    int     map_size;
+    int     added_row;
     char    **map;
     char    *line;
 
+    added_row = 0;
     map = NULL;
-    map_size = 0;
+    if (count_rows(file_path) < 0)
+        return (NULL);
     line = NULL;
+
+    map = malloc(sizeof(char *) * (count_rows(file_path) + 1));
 	fd = open(file_path, O_RDONLY);
     if (fd < 0)
     {
@@ -45,87 +71,16 @@ char **read_map(char *file_path)
     {
         if (!is_valid_line(line))
         {
+            // trzeba wyczyścić mapę
             printf("Invalid map line: %s\n", line);
-            free(line);
-
-            int i;
-			i = 0;
-            while (i < map_size)
-            {
-                free(map[i]);
-                i++;
-            }
-            free(map);
-            close(fd);
             return (NULL);
         }
-
-        // Tworzenie nowej tablicy za pomocą malloc
-        char **new_map;
-		new_map = malloc(sizeof(char *) * (map_size + 1));
-        if (!new_map)
-        {
-            perror("Error allocating memory");
-            free(line);
-
-            int i;
-			i = 0;
-            while (i < map_size)
-            {
-                free(map[i]);
-                i++;
-            }
-            free(map);
-            close(fd);
-            return (NULL);
-        }
-
-        // Kopiowanie danych ze starej tablicy do nowej
-        int i;
-		i = 0;
-        while (i < map_size)
-        {
-            new_map[i] = map[i];
-            i++;
-        }
-
-        // Zwolnienie starej tablicy
-        free(map);
-
-        // Dodanie nowego wiersza
-        new_map[map_size] = line;
-        map = new_map;
-        map_size++;
+        map[added_row++] = ft_strdup(line);
+        free(line);
     }
     close(fd);
-
-    char **final_map = malloc(sizeof(char *) * (map_size + 1));
-    if (!final_map)
-    {
-        perror("Error allocating memory");
-
-        int i;
-		i = 0;
-        while (i < map_size)
-        {
-            free(map[i]);
-            i++;
-        }
-        free(map);
-        return (NULL);
-    }
-
-    int	i;
-	i = 0;
-    while (i < map_size)
-    {
-        final_map[i] = map[i];
-        i++;
-    }
-    final_map[map_size] = NULL;
-
-    free(map);
-    return final_map;
+    map[added_row] = NULL;
+    return (map);
 }
 
 // Funkcja do zwolnienia pamięci mapy
