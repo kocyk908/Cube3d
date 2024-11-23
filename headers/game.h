@@ -30,5 +30,6 @@ int render_frame(void *param);
 int main_loop(t_game *game);
 int init_map(t_map *map);
 int close_window(t_game *game);
+char **map_with_spaces(t_game game);
 
 #endif

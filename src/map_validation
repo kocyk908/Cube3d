@@ -1,0 +1,14 @@
+#include "game.h"
+
+///////////////////////////////// jakaś funkcja do validacji mapy takiej finalnej, łączenie wszystkiego
+// funkcji część jest w map_reading.c
+
+int is_map_valid(t_game game)
+{
+
+    // czy dobre charactery // is_01SENW
+    // czy zamknięta 1-kami //
+    // czy 1 gracz //
+
+    return (1);
+}

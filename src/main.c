@@ -13,7 +13,21 @@ int main(int argc, char **argv)
         return (1);
     }
     game.map.file_path = argv[1];
+    game.map.board = read_map(game.map.file_path);
 
+
+    // validacja mapy
+    
+    char **map = map_with_spaces(game);
+    if (!map)
+    {
+        printf("Invalid map.\n");
+        return (1);
+    }
+
+
+    print_map(map);
+    return (0);
     //free_map(map); //na później
     //mapa////////////////////////
 

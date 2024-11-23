@@ -9,7 +9,12 @@ void print_map(char **map)
     }
     
     for (int i = 0; map[i]; i++)
-    {
-        printf("%s", map[i]); // Każda linia mapy zawiera znak '\n', więc nie dodajemy dodatkowego '\n'
+    {   
+        for (int j = 0; map[i][j]; j++)
+        {
+            printf("%i ", map[i][j]);
+        }
+        printf("\n");
     }
+    
 }

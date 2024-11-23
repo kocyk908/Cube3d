@@ -20,7 +20,7 @@ typedef struct s_window
     void    *win_ptr;
 }               t_window;
 
-int is_valid_line(char *line);
+int is_01SENW(char *line);
 char **read_map(char *file_path);
 void free_map(char **map);
 int count_rows(char *file_path);
