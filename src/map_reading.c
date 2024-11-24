@@ -22,10 +22,10 @@ int find_longest_row_length(char **map)
 
 
 
-// sprawdzanie czy mapy jest okej, do read_map
+
+// sprawdzanie czy mapy jest z dobrych znaków okej, do read_map
 // pomija znaki \n i \r jeśli na końcu
 
-// sprawdza tez czy wiersze są długie przynajmniej 5 znaków, ale to trzeba poprawić raczej
 int is_01SENW(char **map)
 {
     size_t i;
@@ -35,17 +35,15 @@ int is_01SENW(char **map)
     j = 0;
     while (map[i])
     {
+        j = 0;
         while (map[i][j])
         {
             if (map[i][j] != '0' && map[i][j] != '1' && map[i][j] != 'N' &&
-                map[i][j] != 'S' && map[i][j] != 'E' && map[i][j] != 'W' && map[i][j] != ' ')
+                map[i][j] != 'S' && map[i][j] != 'E' && map[i][j] != 'W' &&
+                map[i][j] != ' ' && map[i][j] != '\n' && map[i][j] != '\r')
             {
-			    if (ft_strlen(map[i]) < 5)
-			    {
-				    return (0);
-			    }
-			    if (j == ft_strlen(map[i]) - 2 && map[i][j] == 13 && map[i][j + 1] == 10)
-				    return (1);
+			    // if (j == ft_strlen(map[i]) - 2 && map[i][j] == 13 && map[i][j + 1] == 10)
+                //     break;
 			    return (0);
             }
             j++;
@@ -107,16 +105,9 @@ char **read_map(char *file_path)
     close(fd);
     map[added_row] = NULL;
 
-    if (!is_01SENW(map))
-    {
-        // trzeba wyczyścić mapę
-        printf("Error\n");
-        print_map(map);
-        return (NULL);
-    }
-
     return (map);
 }
+
 // Funkcja do validacji, daje spacje żeby wyrównać długości rzędów do najdłuższego
 char *fill_spaces(char *line, int max_row_len)
 {
