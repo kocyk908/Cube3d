@@ -22,27 +22,33 @@ int find_longest_row_length(char **map)
 
 
 
-// sprawdzanie czy linia mapy jest okej, do read_map
-// usuwa \n i \r z końca linni dla prostszych operacji
-// \n to 10, \r to 13
-// \n to wiadomo next_line a \r to carriage_return (służy do powrotu kursora na początek linii)
-int is_01SENW(char *line)
+// sprawdzanie czy mapy jest okej, do read_map
+// pomija znaki \n i \r jeśli na końcu
+
+// sprawdza tez czy wiersze są długie przynajmniej 5 znaków, ale to trzeba poprawić raczej
+int is_01SENW(char **map)
 {
     size_t i;
-	i = 0;
+    size_t j;
 
-    while (line[i])
+	i = 0;
+    j = 0;
+    while (map[i])
     {
-        if (line[i] != '0' && line[i] != '1' && line[i] != 'N' &&
-            line[i] != 'S' && line[i] != 'E' && line[i] != 'W')
+        while (map[i][j])
         {
-			if (ft_strlen(line) < 5)
-			{
-				return (0);
-			}
-			if (i == ft_strlen(line) - 2 && line[i] == 13 && line[i + 1] == 10)
-				return (1);
-			return (0);
+            if (map[i][j] != '0' && map[i][j] != '1' && map[i][j] != 'N' &&
+                map[i][j] != 'S' && map[i][j] != 'E' && map[i][j] != 'W' && map[i][j] != ' ')
+            {
+			    if (ft_strlen(map[i]) < 5)
+			    {
+				    return (0);
+			    }
+			    if (j == ft_strlen(map[i]) - 2 && map[i][j] == 13 && map[i][j + 1] == 10)
+				    return (1);
+			    return (0);
+            }
+            j++;
         }
         i++;
     }
@@ -94,17 +100,20 @@ char **read_map(char *file_path)
     }
     while ((line = get_next_line(fd)))
     {
-        //if (!is_valid_line(line))
-        //{
-        //    // trzeba wyczyścić mapę
-        //    printf("Invalid map line: %s\n", line);
-        //    return (NULL);
-        //}
         map[added_row++] = ft_strdup(line);
         free(line);
     }
+
     close(fd);
     map[added_row] = NULL;
+
+    if (!is_01SENW(map))
+    {
+        // trzeba wyczyścić mapę
+        printf("Error\n");
+        print_map(map);
+        return (NULL);
+    }
 
     return (map);
 }

@@ -9,6 +9,7 @@ int is_map_valid(t_game game)
     // czy dobre charactery // is_01SENW
     // czy zamknięta 1-kami //
     // czy 1 gracz //
+    // czy wystarczająco szeroka / wysoka // is_01SENW do poprawy lub przeniesienia
 
     return (1);
 }
