@@ -14,6 +14,7 @@ int main(int argc, char **argv)
     }
     game.map.file_path = argv[1];
     game.map.board = read_map(game.map.file_path);
+    game.map.board_with_spaces = map_with_spaces(game);
 
     game.map.height = count_rows(game.map.file_path);
     game.map.width = find_longest_row_length(game.map.board);

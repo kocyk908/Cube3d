@@ -1,8 +1,5 @@
 #include "game.h"
 
-///////////////////////////////// jakaś funkcja do validacji mapy takiej finalnej, łączenie wszystkiego
-// część funkcji jest w map_reading.c
-
 int is_map_valid(t_game game)
 {
 
@@ -34,7 +31,13 @@ int is_map_valid(t_game game)
 
 // czy wystarczająco szeroka / wysoka //
 
-    
+// czy wszystkie 1 są połączone //
+    if (!are_all_ones_connected(game))
+    {
+        printf("nie wszystkie 1 są połączone\n");
+        return (0);
+    }
+    printf("wszystkie 1 są połączone\n\n");
 
     return (1);
 }
@@ -64,108 +67,6 @@ int is_one_player(char **map)
     return (player_count);
 }
 
-// sprawdzone zamknięcie góra->dół
-int is_map_closed_up(t_game game)
-{
-    int i;
-    int j;
-    char **map;
-
-    map = map_with_spaces(game);
-    i = 0;
-    j = 0;
-    while (i < game.map.height - 1 && j < game.map.width - 1)
-    {
-        i = 0;
-        while (map[i][j])
-        {
-            if (map[i][j] != '1' && map[i][j] != ' ')
-                return (0);
-            else if (map[i][j] == '1')
-                break;
-            i++;
-        }
-        j++;
-    }
-    return (1);
-}
-
-// sprawdzone zamknięcie od lewa->prawa
-int is_map_closed_left(t_game game)
-{
-    int i;
-    int j;
-    char **map;
-
-    map = map_with_spaces(game);
-    i = 0;
-    j = 0;
-    while (i < game.map.height - 1 && j < game.map.width - 1)
-    {
-        j = 0;
-        while (map[i][j])
-        {
-            if (map[i][j] != '1' && map[i][j] != ' ')
-                return (0);
-            else if (map[i][j] == '1')
-                break;
-            j++;
-        }
-        i++;
-    }
-    return (1);
-}
-
-int is_map_closed_down(t_game game)
-{
-    int i;
-    int j;
-    char **map;
-
-    map = map_with_spaces(game);
-    i = game.map.height - 1;
-    j = 0;
-    while (i > 0 && j < game.map.width - 1)
-    {
-        i = game.map.height - 1;
-        while (map[i][j])
-        {
-            if (map[i][j] != '1' && map[i][j] != ' ')
-                return (0);
-            else if (map[i][j] == '1')
-                break;
-            i--;
-        }
-        j++;
-    }
-    return (1);
-}
-
-int is_map_closed_right(t_game game)
-{
-    int i;
-    int j;
-    char **map;
-
-    map = map_with_spaces(game);
-    i = 0;
-    j = game.map.width - 1;
-    while (i < game.map.height - 1 && j > 0)
-    {
-        j = game.map.width - 1;
-        while (map[i][j])
-        {
-            if (map[i][j] != '1' && map[i][j] != ' ')
-                return (0);
-            else if (map[i][j] == '1')
-                break;
-            j--;
-        }
-        i++;
-    }
-    return (1);
-}
-
 int is_map_closed(t_game game)
 {
     if (!is_map_closed_up(game))
@@ -192,3 +93,75 @@ int is_map_closed(t_game game)
 }
 
 /// myślę że trzeba dać że '1' musi miec odok siebie z którejś strony chociaż jedną inną '1'
+
+int is_map_flood_fill(char **map, int x, int y, int height, int width, int **visited)
+{
+    if (x < 0 || x >= height || y < 0 || y >= width || map[x][y] != '1' || visited[x][y])
+        return 0;
+
+    visited[x][y] = 1;
+
+    is_map_flood_fill(map, x + 1, y, height, width, visited); // south
+    is_map_flood_fill(map, x - 1, y, height, width, visited); // north
+    is_map_flood_fill(map, x, y + 1, height, width, visited); // east
+    is_map_flood_fill(map, x, y - 1, height, width, visited); // west
+    is_map_flood_fill(map, x + 1, y + 1, height, width, visited); // south-east
+    is_map_flood_fill(map, x - 1, y - 1, height, width, visited); // north-west
+    is_map_flood_fill(map, x + 1, y - 1, height, width, visited); // south-west
+    is_map_flood_fill(map, x - 1, y + 1, height, width, visited); // north-east
+
+    return 1;
+}
+
+int are_all_ones_connected(t_game game)
+{
+    int **visited;
+    int i;
+    int j;
+    int found_first_one;
+    
+    found_first_one = 0;
+    // allocate visited array
+    visited = (int **)malloc(game.map.height * sizeof(int *));
+    for (i = 0; i < game.map.height; i++)
+    {
+        visited[i] = (int *)malloc(game.map.width * sizeof(int));
+        for (j = 0; j < game.map.width; j++)
+            visited[i][j] = 0;
+    }
+
+    // find first '1' and flood fill
+    for (i = 0; i < game.map.height && !found_first_one; i++)
+    {
+        for (j = 0; j < game.map.width && !found_first_one; j++)
+        {
+            if (game.map.board_with_spaces[i][j] == '1')
+            {
+                is_map_flood_fill(game.map.board_with_spaces, i, j, game.map.height, game.map.width, visited);
+                found_first_one = 1;
+            }
+        }
+    }
+
+    // check if all '1' are connected
+    for (i = 0; i < game.map.height; i++)
+    {
+        for (j = 0; j < game.map.width; j++)
+        {
+            if (game.map.board_with_spaces[i][j] == '1' && !visited[i][j])
+            {
+                for (int k = 0; k < game.map.height; k++)
+                    free(visited[k]);
+                free(visited);
+                return 0;
+            }
+        }
+    }
+
+    // free visited array
+    for (i = 0; i < game.map.height; i++)
+        free(visited[i]);
+    free(visited);
+
+    return 1;
+}

@@ -16,6 +16,7 @@ typedef struct s_map {
     int width;
     int height;
     char **board; // Reprezentacja mapy (np. tablica znaków '1', '0')
+    char **board_with_spaces;
 } t_map;
 
 typedef struct s_game {
@@ -23,6 +24,7 @@ typedef struct s_game {
     t_player player;  // Dane gracza
     t_map map;        // Dane mapy
 } t_game;
+
 
 // Prototypy funkcji
 int init_game(t_game *game);
@@ -35,5 +37,11 @@ int is_map_valid(t_game game);
 int is_one_player(char **map);
 int is_map_closed(t_game game);
 int find_longest_row_length(char **map);
+int is_map_closed_up(t_game game);
+int is_map_closed_left(t_game game);
+int is_map_closed_down(t_game game);
+int is_map_closed_right(t_game game);
+
+int are_all_ones_connected(t_game game);
 
 #endif
