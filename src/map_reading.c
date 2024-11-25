@@ -21,11 +21,20 @@ int find_longest_row_length(char **map)
 }
 
 
+// util do is_01SENW, sprawdza czy string kończy się znakiem nowej linii
+int ends_with_n(char *str)
+{
+    int len;
+    
+    len = ft_strlen(str);
+    if (len < 2)
+        return (0);
+    if (str[len - 1] == '\n')
+        return (1);
+    return (0);
+}
 
-
-// sprawdzanie czy mapy jest z dobrych znaków okej, do read_map
-// pomija znaki \n i \r jeśli na końcu
-
+// sprawdza czy w mapie są odpowiednie znaki, helper do validacji
 int is_01SENW(char **map)
 {
     size_t i;
@@ -40,11 +49,11 @@ int is_01SENW(char **map)
         {
             if (map[i][j] != '0' && map[i][j] != '1' && map[i][j] != 'N' &&
                 map[i][j] != 'S' && map[i][j] != 'E' && map[i][j] != 'W' &&
-                map[i][j] != ' ' && map[i][j] != '\n' && map[i][j] != '\r')
+                map[i][j] != ' ')
             {
-			    // if (j == ft_strlen(map[i]) - 2 && map[i][j] == 13 && map[i][j + 1] == 10)
-                //     break;
-			    return (0);
+			    if (ends_with_n(map[i]) == 1 && j == ft_strlen(map[i]) - 1)
+                    break;
+                return (0);
             }
             j++;
         }
@@ -52,6 +61,7 @@ int is_01SENW(char **map)
     }
     return (1);
 }
+
 // zlicza ilość wierszy w mapie, helper do validacji mapy
 int count_rows(char *file_path)
 {
@@ -116,7 +126,7 @@ char *fill_spaces(char *line, int max_row_len)
 
     i = 0;
     new_line = malloc(sizeof(char) * (max_row_len + 1));
-    while (line[i] && line[i] != 10 && line[i] != 13)
+    while (line[i] && line[i] != 10)
     {
         new_line[i] = line[i];
         i++;

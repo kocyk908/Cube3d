@@ -33,5 +33,7 @@ int close_window(t_game *game);
 char **map_with_spaces(t_game game);
 int is_map_valid(t_game game);
 int is_one_player(char **map);
+int is_map_closed(t_game game);
+int find_longest_row_length(char **map);
 
 #endif

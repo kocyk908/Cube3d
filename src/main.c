@@ -15,7 +15,9 @@ int main(int argc, char **argv)
     game.map.file_path = argv[1];
     game.map.board = read_map(game.map.file_path);
 
-    //print_map(game.map.board);
+    game.map.height = count_rows(game.map.file_path);
+    game.map.width = find_longest_row_length(game.map.board);
+    print_map(game.map.board);
     printf("\n\n");
 
     // validacja mapy
