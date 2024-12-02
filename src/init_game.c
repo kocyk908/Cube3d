@@ -23,29 +23,55 @@ int find_widest_line(char **map)
 }
 
 
-// Funkcja alokująca mapę
-int init_map(t_map *map)
+void init_map(t_map *map)
 {
-    map->board = read_map(map->file_path);
-    print_map(map->board);
-    map->height = count_rows(map->file_path);
-    
-    printf("\n\n%i\n\n", find_widest_line(map->board));
-    //z szerokością to nie wiem jak podejść póki co bo mapa nie musi być kwadratem chyba
-    
-    map->width = strlen(map->board[0]);
+    map->file_path = NULL;
+    map->width = 0;
+    map->height = 0;
+    map->file = NULL;
+    map->board = NULL;
+    map->board_with_spaces = NULL;
+}
+
+void init_player(t_player *player)
+{
+    player->x = 0;
+    player->y = 0;
+    player->dir_x = 0;
+    player->dir_y = 0;
+    player->fov = 0;
+}
+
+void init_textures(t_textures *textures)
+{
+    textures->north_texture = NULL;
+    textures->south_texture = NULL;
+    textures->west_texture = NULL;
+    textures->east_texture = NULL;
+    textures->floor_color[0] = -1;
+    textures->ceiling_color[0] = -1;
+    textures->lines_gnl = 0;
+}
+
+int init_window(t_game *game)
+{
+    game->window.mlx_ptr = mlx_init();
+    if (game->window.mlx_ptr == NULL)
+        return (0);
+    game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Giereczka");
+    if (game->window.win_ptr == NULL)
+    {
+        free(game->window.mlx_ptr);
+        return (0);
+    }
     return (1);
 }
+// Funkcja alokująca map
 
 int init_game(t_game *game)
 {
-    if (!init_map(&game->map))
-        return 0;
-
-    // Inicjalizuj inne elementy gry tutaj
-	// Inicjalizacja gracza
-    game->player.x = 100; // Pozycja X gracza w pikselach
-    game->player.y = 100; // Pozycja Y gracza w pikselach
-	
-    return 1;
+    init_map(&game->map);
+    init_player(&game->player);
+    init_textures(&game->textures);
+    return (1);
 }

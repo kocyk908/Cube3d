@@ -2,7 +2,8 @@
 
 
 // szuka długości najdłuższego wiersza w mapie, helper do validacji, do map_with_spaces
-int find_longest_row_length(char **map)
+
+int find_longest_row_length(char **map) // szerokość z \n i \0 dla 1111 -> 6
 {
     int max_length = 0;
     int current_length;
@@ -85,21 +86,21 @@ int count_rows(char *file_path)
     return (row_count);
 }
 
-// odczytuje GNLinem mapę, i zapisuje ją do char **map, sprawdza też czy ma odpowiednie znaki ale to można przenieść
-char **read_map(char *file_path)
+// odczytuje GNLinem plik .cub, i zapisuje do char **map
+char **read_file(char *file_path)
 {
     int     fd;
     int     added_row;
-    char    **map;
+    char    **file;
     char    *line;
 
     added_row = 0;
-    map = NULL;
+    file = NULL;
     if (count_rows(file_path) < 0)
         return (NULL);
     line = NULL;
 
-    map = malloc(sizeof(char *) * (count_rows(file_path) + 1));
+    file = malloc(sizeof(char *) * (count_rows(file_path) + 1));
 	fd = open(file_path, O_RDONLY);
     if (fd < 0)
     {
@@ -108,15 +109,52 @@ char **read_map(char *file_path)
     }
     while ((line = get_next_line(fd)))
     {
-        map[added_row++] = ft_strdup(line);
+        file[added_row++] = ft_strdup(line);
         free(line);
     }
 
     close(fd);
-    map[added_row] = NULL;
+    file[added_row] = NULL;
 
-    return (map);
+    return (file);
 }
+
+char **read_map(t_game *game)
+{
+    int     fd;
+    int     added_row;
+    char    **file;
+    char    *line;
+    int    i;
+
+    i = 0;
+    added_row = 0;
+    file = NULL;
+    line = NULL;
+    file = malloc(sizeof(char *) * ((count_rows(game->map.file_path) - game->textures.lines_gnl)  + 1));
+	fd = open(game->map.file_path, O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error opening file");
+        return (NULL);
+    }
+    while ((line = get_next_line(fd)))
+    {
+        if (i < game->textures.lines_gnl)
+        {
+            i++;
+            free(line);
+            continue;
+        }
+        file[added_row++] = ft_strdup(line);
+        free(line);
+    }
+    close(fd);
+    file[added_row] = NULL;
+
+    return (file);
+}
+
 
 // Funkcja do validacji, daje spacje żeby wyrównać długości rzędów do najdłuższego
 char *fill_spaces(char *line, int max_row_len)

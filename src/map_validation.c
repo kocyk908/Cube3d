@@ -31,6 +31,8 @@ int is_map_valid(t_game game)
 
 // czy wystarczająco szeroka / wysoka //
 
+// to już chyba samo z siebie sie sprawdza
+
 // czy wszystkie 1 są połączone //
     if (!are_all_ones_connected(game))
     {
@@ -100,6 +102,9 @@ int is_map_flood_fill(char **map, int x, int y, int height, int width, int **vis
         return 0;
 
     visited[x][y] = 1;
+
+    //print_visited_map(visited, height, width, x, y); // Print the visited map
+
 
     is_map_flood_fill(map, x + 1, y, height, width, visited); // south
     is_map_flood_fill(map, x - 1, y, height, width, visited); // north
