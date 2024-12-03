@@ -1,10 +1,10 @@
 #include "game.h"
 
-void render_player(t_game *game) {
-    int x = (int)game->player.x;
-    int y = (int)game->player.y;
+void render_player(t_game *game)
+{
+    int x = game->player.x;
+    int y = game->player.y;
 
-    // Rysowanie gracza jako małego kwadratu
     for (int i = -2; i <= 2; i++) {
         for (int j = -2; j <= 2; j++) {
             int draw_x = x + i;
@@ -14,6 +14,20 @@ void render_player(t_game *game) {
                 mlx_pixel_put(game->window.mlx_ptr, game->window.win_ptr, draw_x, draw_y, 0xFFFFFF); // Kolor biały
         }
     }
+}
+
+int handle_key_press(int keycode, t_game *game)
+{
+    if (keycode == 65362)
+        game->player.y -= 1;
+    else if (keycode == 65364)
+        game->player.y += 1;
+    else if (keycode == 65361)
+        game->player.x -= 1;
+    else if (keycode == 65363)
+        game->player.x += 1;
+
+    return (0);
 }
 
 int render_frame(void *param) {

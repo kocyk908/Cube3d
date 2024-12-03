@@ -70,4 +70,6 @@ int ft_isspace(char c);
 char **read_map(t_game *game);
 char **read_file(char *file_path);
 
+int handle_key_press(int keycode, t_game *game);
+
 #endif
