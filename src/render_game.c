@@ -5,8 +5,10 @@ void render_player(t_game *game)
     int x = game->player.x;
     int y = game->player.y;
 
-    for (int i = -2; i <= 2; i++) {
-        for (int j = -2; j <= 2; j++) {
+    for (int i = -4; i <= 4; i++)
+    {
+        for (int j = -4; j <= 4; j++)
+        {
             int draw_x = x + i;
             int draw_y = y + j;
 
@@ -36,8 +38,8 @@ int render_frame(void *param) {
     mlx_clear_window(game->window.mlx_ptr, game->window.win_ptr);
 
     // Rysowanie gracza
+    //render_wall(game);
     render_player(game);
 
     return (0);
 }
-

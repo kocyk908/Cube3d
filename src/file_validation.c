@@ -87,41 +87,41 @@ int look_for_textures(t_game *game)
         if (file[i][j] == 'N' && file[i][j + 1] == 'O' && file[i][j + 2] == ' ' && game->textures.north_texture == NULL)
         {
             if (!parse_texture(file[i], j, &game->textures.north_texture))
-                return (0);
+                return (-1);
         }
         else if (file[i][j] == 'S' && file[i][j + 1] == 'O' && file[i][j + 2] == ' ' && game->textures.south_texture == NULL)
         {
             if (!parse_texture(file[i], j, &game->textures.south_texture))
-                return (0);
+                return (-1);
         }
         else if (file[i][j] == 'W' && file[i][j + 1] == 'E' && file[i][j + 2] == ' ' && game->textures.west_texture == NULL)
         {
             if (!parse_texture(file[i], j, &game->textures.west_texture))
-                return (0);
+                return (-1);
         }
         else if (file[i][j] == 'E' && file[i][j + 1] == 'A' && file[i][j + 2] == ' ' && game->textures.east_texture == NULL)
         {
             if (!parse_texture(file[i], j, &game->textures.east_texture))
-                return (0);
+                return (-1);
         }
         else if (file[i][j] == 'F' && file[i][j + 1] == ' ' && game->textures.floor_color[0] == -1)
         {
             j++;
             if (!parse_color(&file[i][j], game->textures.floor_color))
-                return (0);
+                return (-1);
         }
         else if (file[i][j] == 'C' && file[i][j + 1] == ' ' && game->textures.ceiling_color[0] == -1)
         {
             j++;
             if (!parse_color(&file[i][j], game->textures.ceiling_color))
-                return (0);
+                return (-1);
         }
         else
         {
             if (game->textures.north_texture != NULL && game->textures.south_texture != NULL && game->textures.west_texture != NULL && game->textures.east_texture != NULL && game->textures.floor_color[0] != -1 && game->textures.ceiling_color[0] != -1)
                 return (i); // Zwróć liczbę odczytanych linii gdy wszystkie dane zostały odczytane i znaleziono inne znaki
-            printf("Error: Invalid line in textures: %s\n", file[i]);
-            return (0);
+            printf("Error: Invalid line in textures: %s or those are not textures\n ", file[i]);
+            return (-1);
         }
         i++;
     }
@@ -130,12 +130,16 @@ int look_for_textures(t_game *game)
 
 
 // Funkcja główna do odczytu danych gry i zwrócenia liczby odczytanych linii
-void read_textures(t_game *game)
+int read_textures(t_game *game)
 {
     int line_count;
 
-    line_count = look_for_textures(game); 
+    line_count = look_for_textures(game);
+    if (line_count == -1)
+    {
+        return (0);
+    }
     //printf("%i\n", line_count);
     game->textures.lines_gnl = line_count;
-    return ;
+    return (1);
 }

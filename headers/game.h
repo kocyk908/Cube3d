@@ -9,6 +9,8 @@ typedef struct s_player {
     double dir_x; // Kierunek X
     double dir_y; // Kierunek Y
     double fov;   // Pole widzenia
+
+    char    NSWE;
 } t_player;
 
 typedef struct s_map {
@@ -64,12 +66,20 @@ int is_map_closed_right(t_game game);
 
 int are_all_ones_connected(t_game game);
 
-void read_textures(t_game *game);
+int read_textures(t_game *game);
 int ft_isspace(char c);
 
 char **read_map(t_game *game);
 char **read_file(char *file_path);
 
 int handle_key_press(int keycode, t_game *game);
+
+void player_pos(t_game *game);
+
+
+
+
+void	adding_in_graphics(t_game *game);
+int	controls_working(t_game *game);
 
 #endif

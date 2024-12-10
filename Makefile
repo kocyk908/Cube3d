@@ -4,7 +4,7 @@ CC	:= gcc
 
 CFLAGS	:= -Wall -Wextra -Werror -Iheaders/
 
-MXFLAGS	:= -Lminilibx-linux -lmlx_Linux -lX11 -lXext
+MXFLAGS	:= -Lminilibx-linux -lmlx_Linux -lm -lX11 -lXext
 
 SOURCE	:= src/*.c
 

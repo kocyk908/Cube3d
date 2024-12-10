@@ -58,7 +58,7 @@ int init_window(t_game *game)
     game->window.mlx_ptr = mlx_init();
     if (game->window.mlx_ptr == NULL)
         return (0);
-    game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, WIN_WIDTH, WIN_HEIGHT, "Giereczka");
+    game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, game->map.width, game->map.height, "Giereczka");
     if (game->window.win_ptr == NULL)
     {
         free(game->window.mlx_ptr);
