@@ -80,6 +80,7 @@ void player_pos(t_game *game);
 
 
 void	adding_in_graphics(t_game *game);
-int	controls_working(t_game *game);
+int	controls_working(int command, t_game *game);
+void	place_images_in_game(t_game *game);
 
 #endif

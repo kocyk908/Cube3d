@@ -32,14 +32,12 @@ int handle_key_press(int keycode, t_game *game)
     return (0);
 }
 
-int render_frame(void *param) {
+int render_frame(void *param)
+{
     t_game *game = (t_game *)param;
 
     mlx_clear_window(game->window.mlx_ptr, game->window.win_ptr);
-
-    // Rysowanie gracza
-    //render_wall(game);
-    render_player(game);
+    adding_in_graphics(game);
 
     return (0);
 }
