@@ -18,20 +18,6 @@ void render_player(t_game *game)
     }
 }
 
-int handle_key_press(int keycode, t_game *game)
-{
-    if (keycode == 65362)
-        game->player.y -= 1;
-    else if (keycode == 65364)
-        game->player.y += 1;
-    else if (keycode == 65361)
-        game->player.x -= 1;
-    else if (keycode == 65363)
-        game->player.x += 1;
-
-    return (0);
-}
-
 int render_frame(void *param)
 {
     t_game *game = (t_game *)param;

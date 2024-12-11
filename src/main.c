@@ -50,10 +50,6 @@ int main(int argc, char **argv)
 
     player_pos(&game);
 
-    printf("hej -> %f\n\n", game.player.x);
-    printf("hej -> %f\n\n", game.player.y);
-    printf("hej -> %c\n\n", game.player.NSWE);
-
 
     //      Inicjalizacja okna
     if (!init_window(&game))
@@ -63,15 +59,18 @@ int main(int argc, char **argv)
     }
           //  return 0;
 
+
+    printf("x %f, y %f\n", game.player.x, game.player.y);
+    print_map(game.map.board_with_spaces);
+
     game.player.dir_x = 1;
     game.player.dir_y = 0;
     game.player.fov = M_PI / 3;
 
     // Ustawienie obsługi zdarzeń
     place_images_in_game(&game);
-    printf("tutaj\n\n");
     //mlx_hook(game.window.win_ptr, 2, 1L<<0, controls_working, &game); 
-    mlx_key_hook(game.window.mlx_ptr, controls_working, &game);
+    mlx_key_hook(game.window.win_ptr, controls_working, &game);
     mlx_loop_hook(game.window.mlx_ptr, render_frame, &game);
     mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
     mlx_loop(game.window.mlx_ptr);
@@ -96,8 +95,9 @@ void player_pos(t_game *game)
             if (mapa[i][j] == 'N' || mapa[i][j] == 'S' || mapa[i][j] == 'E' || mapa[i][j] == 'W')
             {
                 game->player.NSWE = mapa[i][j];
-                game->player.x = i;
-                game->player.y = j;
+                printf("%c\n", game->player.NSWE);
+                game->player.x = j;
+                game->player.y = i;
             }
             j++;
         }
