@@ -1,15 +1,39 @@
 #ifndef GAME_H
 #define GAME_H
 
+# define WIDTH 1280
+# define HEIGHT 720
+
+# define W 119
+# define A 97
+# define S 115
+# define D 100
+
+# define UP 65362
+# define DOWN 65364
+# define LEFT 65361
+# define RIGHT 65363
+
+# define PI 3.14159265359
+
 #include "cube3d.h"
 
 typedef struct s_player {
     double x;    // Pozycja X gracza
     double y;    // Pozycja Y gracza
+    double angle; // Kąt patrzenia gracza
+
+    bool    key_up;
+    bool    key_down;
+    bool    key_left;
+    bool    key_right;
+
+    bool    left_rotate;
+    bool    right_rotate;
+
     double dir_x; // Kierunek X
     double dir_y; // Kierunek Y
     double fov;   // Pole widzenia
-
     char    NSWE;
 } t_player;
 
@@ -36,6 +60,12 @@ typedef struct s_window
 {
     void    *mlx_ptr;
     void    *win_ptr;
+    void    *img;
+
+    char    *data;
+    int     bpp;
+    int     size_l;
+    int     endian;
 }               t_window;
 
 
@@ -50,8 +80,6 @@ typedef struct s_game {
 // Prototypy funkcji
 int init_game(t_game *game);
 int init_window(t_game *game);
-int render_frame(void *param);
-int main_loop(t_game *game);
 void init_map(t_map *map);
 int close_window(t_game *game);
 char **map_with_spaces(t_game game);
@@ -80,7 +108,21 @@ void player_pos(t_game *game);
 
 
 void	adding_in_graphics(t_game *game);
-int	controls_working(int command, t_game *game);
 void	place_images_in_game(t_game *game);
 
+
+
+// FUNKCJE Z FILMU
+void    draw_square(int x, int y, int size, int color, t_game *game);
+int key_pressed(int command, t_game *game);
+int key_release(int command, t_game *game);
+int draw_loop(t_game *game);
+void    clear_image(t_game *game);
+void    draw_map(t_game *game);
+
+
+void keyboard_d(t_game *game, double i);
+void keyboard_a(t_game *game, double i);
+void keyboard_s(t_game *game, double i);
+void keyboard_w(t_game *game, double i);
 #endif

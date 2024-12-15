@@ -51,86 +51,145 @@ void	adding_in_graphics(t_game *game)
 	}
 }
 
-
-
-
-
-
-static void keyboard_w(t_game *game)
+void keyboard_w(t_game *game, double speed)
 {
-    int i = game->player.x;
-    int j = game->player.y;
+    int i;
+    int j;
+    int steps;
 
-    j--;
-    if (game->map.board_with_spaces[j][i] == '1')
-        return ;
+    i = (int)game->player.x;
+    j = (int)game->player.y;
+    steps = speed;
+
+    while (steps > 0)
+    {
+        j--;
+        if (game->map.board_with_spaces[j][i] == '1')
+        {
+            j++; // Step back to the last valid position
+            break;
+        }
+        steps--;
+    }
+
     game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = '0';
     game->player.y = j;
-    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE; // Assuming 'P' represents the player
-    return ;
+    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE;
+    return;
 }
 
-static void keyboard_s(t_game *game)
+void keyboard_s(t_game *game, double speed)
 {
-    int i = game->player.x;
-    int j = game->player.y;
+    int i;
+    int j;
+    int steps;
 
-    j++;
-    if (game->map.board_with_spaces[j][i] == '1')
-        return ;
+    i = (int)game->player.x;
+    j = (int)game->player.y;
+    steps = speed;
+
+    while (steps > 0)
+    {
+        j++;
+        if (game->map.board_with_spaces[j][i] == '1')
+        {
+            j--; // Step back to the last valid position
+            break;
+        }
+        steps--;
+    }
+
     game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = '0';
     game->player.y = j;
-    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE; // Assuming 'P' represents the player
-    return ;
+    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE;
+    return;
 }
 
-static void keyboard_a(t_game *game)
+void keyboard_a(t_game *game, double speed)
 {
-    int i = game->player.x;
-    int j = game->player.y;
+    int i;
+    int j;
+    int steps;
 
-    i--;
-    if (game->map.board_with_spaces[j][i] == '1')
-        return ;
+    i = (int)game->player.x;
+    j = (int)game->player.y;
+    steps = speed;
+
+    while (steps > 0)
+    {
+        i--;
+        if (game->map.board_with_spaces[j][i] == '1')
+        {
+            i++; // Step back to the last valid position
+            break;
+        }
+        steps--;
+    }
+
     game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = '0';
     game->player.x = i;
-    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE; // Assuming 'P' represents the player
-    return ;
+    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE;
+    return;
 }
 
-static void keyboard_d(t_game *game)
+void keyboard_d(t_game *game, double speed)
 {
-    int i = game->player.x;
-    int j = game->player.y;
+    int i;
+    int j;
+    int steps;
 
-    i++;
-    if (game->map.board_with_spaces[j][i] == '1')
-        return ;
+    i = (int)game->player.x;
+    j = (int)game->player.y;
+    steps = speed;
+
+    while (steps > 0)
+    {
+        i++;
+        if (game->map.board_with_spaces[j][i] == '1')
+        {
+            i--; // Step back to the last valid position
+            break;
+        }
+        steps--;
+    }
     game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = '0';
     game->player.x = i;
-    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE; // Assuming 'P' represents the player
-    return ;
+    game->map.board_with_spaces[(int)game->player.y][(int)game->player.x] = game->player.NSWE;
+    return;
 }
 
-int controls_working(int command, t_game *game)
+int key_pressed(int command, t_game *game)
 {
 	printf("controls working command -> %i\n", command);
-    if (command == 119 || command == 65362) // Strzałka w górę
-        keyboard_w(game);
-	else if (command == 115 || command == 65364)
-		keyboard_s(game);
-	else if (command == 97 || command == 65361)
-		keyboard_a(game);
-	else if (command == 100 || command == 65363)
-		keyboard_d(game);
-	//printf("x -> %f y -> %f\n", game->player.x, game->player.y);
+    if (command == W) // Strzałka w górę
+        game->player.key_up = true;
+	else if (command == S)
+		game->player.key_down = true;
+	else if (command == A)
+		game->player.key_left = true;
+	else if (command == D)
+		game->player.key_right = true;
+    if (command == LEFT)
+        game->player.left_rotate = true;
+    else if (command == RIGHT)
+        game->player.right_rotate = true;
+    return (0);
 
-	print_map(game->map.board_with_spaces);
+}
 
-
-    //if (works)
-    //{
-    //    adding_in_graphics(game);
-    //}
-    return (1);
+int key_release(int command, t_game *game)
+{
+    if (command == W)
+        game->player.key_up = false;
+	else if (command == S)
+		game->player.key_down = false;
+	else if (command == A)
+		game->player.key_left = false;
+	else if (command == D)
+		game->player.key_right = false;
+    if (command == LEFT)
+        game->player.left_rotate = false;
+    else if (command == RIGHT)
+        game->player.right_rotate = false;
+    return (0);
 }

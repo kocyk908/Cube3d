@@ -1,29 +1,68 @@
 #include "game.h"
 
-void render_player(t_game *game)
+void    put_pixel(int x, int y, int color, t_game *game)
 {
-    int x = game->player.x;
-    int y = game->player.y;
+    int index;
 
-    for (int i = -4; i <= 4; i++)
+    if (x >= WIDTH || y >= HEIGHT || x < 0 || y < 0)
+        return ;
+    index = y * game->window.size_l + x * (game->window.bpp / 8);    
+    game->window.data[index] = color & 0xFF;
+    game->window.data[index + 1] = (color >> 8) & 0xFF;
+    game->window.data[index + 2] = (color >> 16) & 0xFF;
+}
+
+void    draw_square(int x, int y, int size, int color, t_game *game)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (i < size)
     {
-        for (int j = -4; j <= 4; j++)
+        j = 0;
+        while (j < size)
         {
-            int draw_x = x + i;
-            int draw_y = y + j;
-
-            if (draw_x >= 0 && draw_x < WIN_WIDTH && draw_y >= 0 && draw_y < WIN_HEIGHT)
-                mlx_pixel_put(game->window.mlx_ptr, game->window.win_ptr, draw_x, draw_y, 0xFFFFFF); // Kolor biały
+            put_pixel(x + i, y + j, color, game);
+            j++;
         }
+        i++;
     }
 }
 
-int render_frame(void *param)
+void    clear_image(t_game *game)
 {
-    t_game *game = (t_game *)param;
+    int i;
+    int j;
 
-    mlx_clear_window(game->window.mlx_ptr, game->window.win_ptr);
-    adding_in_graphics(game);
+    i = 0;
+    while (i < WIDTH)
+    {
+        j = 0;
+        while (j < HEIGHT)
+        {
+            put_pixel(i, j, 0, game);
+            j++;
+        }
+        i++;
+    }
+}
 
-    return (0);
+void    draw_map(t_game *game)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (i < game->map.height)
+    {
+        j = 0;
+        while (game->map.board_with_spaces[i][j])
+        {
+            if (game->map.board_with_spaces[i][j] == '1')
+                draw_square(j * 64, i * 64, 64, 0xFFFFFF, game);
+            j++;
+        }
+        i++;
+    }
 }

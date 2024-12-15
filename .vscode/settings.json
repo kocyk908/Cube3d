@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"map_validation": "cpp"
+		"map_validation": "cpp",
+		"cmath": "cpp",
+		"*.tcc": "cpp"
 	}
 }

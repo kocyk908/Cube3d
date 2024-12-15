@@ -37,9 +37,19 @@ void init_player(t_player *player)
 {
     player->x = 0;
     player->y = 0;
+    player->angle = 0;
+
+    player->key_up = false;
+    player->key_down = false;
+    player->key_left = false;
+    player->key_right = false;
+
+    player->left_rotate = false;
+    player->right_rotate = false;
     player->dir_x = 0;
     player->dir_y = 0;
     player->fov = 0;
+    
 }
 
 void init_textures(t_textures *textures)
@@ -58,12 +68,20 @@ int init_window(t_game *game)
     game->window.mlx_ptr = mlx_init();
     if (game->window.mlx_ptr == NULL)
         return (0);
-    game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, game->map.width * 40, game->map.height * 40, "Giereczka");
+    game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, WIDTH, HEIGHT, "Giereczka");
     if (game->window.win_ptr == NULL)
     {
         free(game->window.mlx_ptr);
         return (0);
     }
+    game->window.img = mlx_new_image(game->window.mlx_ptr, WIDTH, HEIGHT);
+    if (game->window.img == NULL)
+    {
+        free(game->window.img);
+        return (0);
+    }
+    game->window.data = mlx_get_data_addr(game->window.img, &game->window.bpp, &game->window.size_l, &game->window.endian);
+    mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
     return (1);
 }
 // Funkcja alokująca map

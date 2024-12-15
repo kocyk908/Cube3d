@@ -10,10 +10,3 @@ int close_window(t_game *game)
     exit(0);
     return (0);
 }
-
-int main_loop(t_game *game)
-{
-    // Tutaj będą wywoływane funkcje odpowiadające za rysowanie sceny, obsługę gracza itp.
-    render_frame(game);  // Funkcja odpowiedzialna za raycasting i rysowanie.
-    return (0);
-}
