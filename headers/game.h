@@ -4,6 +4,8 @@
 # define WIDTH 1280
 # define HEIGHT 720
 
+# define BLOCK 64
+
 # define W 119
 # define A 97
 # define S 115
@@ -119,6 +121,7 @@ int key_release(int command, t_game *game);
 int draw_loop(t_game *game);
 void    clear_image(t_game *game);
 void    draw_map(t_game *game);
+void    put_pixel(int x, int y, int color, t_game *game);
 
 
 void keyboard_d(t_game *game, double i);

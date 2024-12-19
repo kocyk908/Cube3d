@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 
 void move_player(t_game *game)
 {
-    int speed;
+    double speed;
     double angle_speed;
     double cos_angle;
     double sin_angle;
@@ -88,7 +88,7 @@ void move_player(t_game *game)
     cos_angle = cos(game->player.angle);
     sin_angle = sin(game->player.angle);
     angle_speed = 0.03;
-    speed = 1;
+    speed = 0.1;
     if (game->player.left_rotate)
         game->player.angle -= angle_speed;
     if (game->player.right_rotate)
@@ -122,10 +122,35 @@ void move_player(t_game *game)
         game->player.x -= sin_angle * speed;
         game->player.y += cos_angle * speed;
     }
-    printf("cos_angle: %f\n", cos_angle);
-    printf("sin_angle: %f\n", sin_angle);
 
     // kolizji mapy nie ma !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+}
+
+bool touch(double px, double py, t_game *game)
+{
+    int x = px;
+    int y = py;
+    printf("x %i, y %i\n", x, y);
+    if(game->map.board_with_spaces[x][y] == '1')
+        return (true);
+    return (false);
+}
+
+void draw_line(t_player *player, t_game *game, double start_x, int i)
+{
+    (void)i;
+    double cos_angle = cos(start_x);
+    double sin_angle = sin(start_x);
+    double ray_x = player->x;
+    double ray_y = player->y;
+
+    printf("x %f,y %f\n", ray_x, ray_y);
+    while(!touch(ray_x, ray_y, game))
+    {
+        put_pixel(ray_x, ray_y, 0xFF0000, game);
+        ray_x += cos_angle;
+        ray_y += sin_angle;
+    }
 }
 
 int draw_loop(t_game *game)
@@ -135,8 +160,18 @@ int draw_loop(t_game *game)
     player = &game->player;
     move_player(game);
     clear_image(game);
-    draw_square(player->x * 64, player->y * 64, 10, 0x0000FF, game);
+    draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
     draw_map(game);
+    
+    double fraction = PI / 3 / WIDTH;
+    double start_x = player->angle - PI / 6;
+    int i = 0;
+    while(i < WIDTH)
+    {
+        draw_line(player, game, start_x, i);
+        start_x += fraction;
+        i++;
+    }
     mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
     return (0);
 }
