@@ -140,6 +140,6 @@ int read_textures(t_game *game)
         return (0);
     }
     //printf("%i\n", line_count);
-    game->textures.lines_gnl = line_count;
+    game->textures.height_util = line_count;
     return (1);
 }

@@ -35,8 +35,10 @@ int main(int argc, char **argv)
 
     game.map.board_with_spaces = map_with_spaces(game);
     game.map.width = find_longest_row_length(game.map.board);
-    game.map.height = count_rows(game.map.file_path) - game.textures.lines_gnl;
+    game.map.height = game.textures.height_util;
 
+    printf("map 1 %i\n", count_rows(game.map.file_path));
+    printf("map height: %d\n", game.map.height);
     //print_map(game.map.board);
     //printf("\n\n");
 

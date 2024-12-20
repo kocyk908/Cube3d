@@ -55,7 +55,7 @@ typedef struct s_textures {
     char *east_texture;
     int floor_color[3];  // RGB dla F
     int ceiling_color[3]; // RGB dla C
-    int lines_gnl; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
+    int height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
 } t_textures;
 
 typedef struct s_window

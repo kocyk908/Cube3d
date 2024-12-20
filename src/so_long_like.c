@@ -160,7 +160,7 @@ void keyboard_d(t_game *game, double speed)
 
 int key_pressed(int command, t_game *game)
 {
-	printf("controls working command -> %i\n", command);
+	//printf("controls working command -> %i\n", command);
     if (command == W) // Strzałka w górę
         game->player.key_up = true;
 	else if (command == S)

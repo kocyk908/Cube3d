@@ -131,7 +131,7 @@ char **read_map(t_game *game)
     added_row = 0;
     file = NULL;
     line = NULL;
-    file = malloc(sizeof(char *) * ((count_rows(game->map.file_path) - game->textures.lines_gnl)  + 1));
+    file = malloc(sizeof(char *) * ((count_rows(game->map.file_path) - game->textures.height_util)  + 1));
 	fd = open(game->map.file_path, O_RDONLY);
     if (fd < 0)
     {
@@ -140,7 +140,7 @@ char **read_map(t_game *game)
     }
     while ((line = get_next_line(fd)))
     {
-        if (i < game->textures.lines_gnl)
+        if (i < game->textures.height_util)
         {
             i++;
             free(line);
@@ -150,6 +150,16 @@ char **read_map(t_game *game)
         free(line);
     }
     close(fd);
+
+    while (added_row > 0 && (file[added_row - 1][0] == '\n' || file[added_row - 1][0] == '\0'))
+    {
+        free(file[added_row - 1]);
+        file[added_row - 1] = NULL;
+        added_row--;
+    }
+
+    game->textures.height_util = added_row;
+    // Ensure null-termination
     file[added_row] = NULL;
 
     return (file);

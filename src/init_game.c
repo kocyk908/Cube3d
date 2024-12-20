@@ -60,7 +60,7 @@ void init_textures(t_textures *textures)
     textures->east_texture = NULL;
     textures->floor_color[0] = -1;
     textures->ceiling_color[0] = -1;
-    textures->lines_gnl = 0;
+    textures->height_util = 0;
 }
 
 int init_window(t_game *game)

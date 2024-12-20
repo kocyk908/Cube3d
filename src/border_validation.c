@@ -8,6 +8,7 @@ int is_map_closed_up(t_game game)
     char **map;
 
     map = map_with_spaces(game);
+    print_map(map);
     i = 0;
     j = 0;
     while (i < game.map.height - 1 && j < game.map.width - 1)
@@ -101,3 +102,4 @@ int is_map_closed_right(t_game game)
     }
     return (1);
 }
+
