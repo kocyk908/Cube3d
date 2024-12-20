@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 
     game.player.dir_x = 1;
     game.player.dir_y = 0;
-    game.player.fov = PI / 3;
+    game.player.fov = 2 * PI;
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
@@ -128,11 +128,12 @@ void move_player(t_game *game)
 
 bool touch(double px, double py, t_game *game)
 {
-    int x = px;
-    int y = py;
-    printf("x %i, y %i\n", x, y);
+    int x = (int)(py / BLOCK);
+    int y = (int)(px / BLOCK);
     if(game->map.board_with_spaces[x][y] == '1')
+    {
         return (true);
+    }
     return (false);
 }
 
@@ -141,10 +142,9 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
     (void)i;
     double cos_angle = cos(start_x);
     double sin_angle = sin(start_x);
-    double ray_x = player->x;
-    double ray_y = player->y;
+    double ray_x = player->x * BLOCK;
+    double ray_y = player->y * BLOCK;
 
-    printf("x %f,y %f\n", ray_x, ray_y);
     while(!touch(ray_x, ray_y, game))
     {
         put_pixel(ray_x, ray_y, 0xFF0000, game);
@@ -163,10 +163,10 @@ int draw_loop(t_game *game)
     draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
     draw_map(game);
     
-    double fraction = PI / 3 / WIDTH;
-    double start_x = player->angle - PI / 6;
+    double fraction = game->player.fov / WIDTH;
+    double start_x = player->angle - (game->player.fov / 2);
     int i = 0;
-    while(i < WIDTH)
+    while(i < game->map.width)
     {
         draw_line(player, game, start_x, i);
         start_x += fraction;

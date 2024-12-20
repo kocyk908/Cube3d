@@ -32,20 +32,20 @@ void    draw_square(int x, int y, int size, int color, t_game *game)
 
 void    clear_image(t_game *game)
 {
-    int i;
-    int j;
+        int i;
+        int j;
 
-    i = 0;
-    while (i < WIDTH)
-    {
-        j = 0;
-        while (j < HEIGHT)
+        i = 0;
+        while (i < WIDTH)
         {
-            put_pixel(i, j, 0, game);
-            j++;
+            j = 0;
+            while (j < HEIGHT)
+            {
+                put_pixel(i, j, 0, game);
+                j++;
+            }
+            i++;
         }
-        i++;
-    }
 }
 
 void    draw_map(t_game *game)
