@@ -1,6 +1,7 @@
 #include "cube3d.h"
 #include "game.h" // Dodajemy plik nagłówkowy, gdzie zdefiniujemy strukturę gry i podstawowe funkcje.
 
+
 int main(int argc, char **argv)
 {
     t_game game;
@@ -81,11 +82,15 @@ void move_player(t_game *game)
     double angle_speed;
     double cos_angle;
     double sin_angle;
+    double new_x;
+    double new_y;
 
     cos_angle = cos(game->player.angle);
     sin_angle = sin(game->player.angle);
     angle_speed = 0.1;
-    speed = 0.15;
+    speed = SPEED;
+
+    // Obrót gracza
     if (game->player.left_rotate)
         game->player.angle -= angle_speed;
     if (game->player.right_rotate)
@@ -95,32 +100,50 @@ void move_player(t_game *game)
     if (game->player.angle < 0)
         game->player.angle = 2 * PI;
 
+    // Ruch do przodu
     if (game->player.key_up)
     {
-        //keyboard_w(game, i);
-        game->player.x += cos_angle * speed;
-        game->player.y += sin_angle * speed;
+        new_x = game->player.x + cos_angle * speed;
+        new_y = game->player.y + sin_angle * speed;
+        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+        {
+            game->player.x = new_x;
+            game->player.y = new_y;
+        }
     }
+    // Ruch do tyłu
     if (game->player.key_down)
     {
-        //keyboard_s(game, i);
-        game->player.x -= cos_angle * speed;
-        game->player.y -= sin_angle * speed;
+        new_x = game->player.x - cos_angle * speed;
+        new_y = game->player.y - sin_angle * speed;
+        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+        {
+            game->player.x = new_x;
+            game->player.y = new_y;
+        }
     }
+    // Ruch w lewo
     if (game->player.key_left)
     {
-        //keyboard_a(game, i);
-        game->player.x += sin_angle * speed;
-        game->player.y -= cos_angle * speed;
+        new_x = game->player.x + sin_angle * speed;
+        new_y = game->player.y - cos_angle * speed;
+        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+        {
+            game->player.x = new_x;
+            game->player.y = new_y;
+        }
     }
+    // Ruch w prawo
     if (game->player.key_right)
     {
-        //keyboard_d(game, i);
-        game->player.x -= sin_angle * speed;
-        game->player.y += cos_angle * speed;
+        new_x = game->player.x - sin_angle * speed;
+        new_y = game->player.y + cos_angle * speed;
+        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+        {
+            game->player.x = new_x;
+            game->player.y = new_y;
+        }
     }
-
-    // kolizji mapy nie ma !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
 bool touch(double px, double py, t_game *game)
@@ -136,7 +159,7 @@ bool touch(double px, double py, t_game *game)
     return (false);
 }
 
-double distance(float x, float y)
+double distance(double x, double y)
 {
     return sqrt(x * x + y * y);
 }

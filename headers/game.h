@@ -18,6 +18,8 @@
 
 # define PI 3.14159265359
 
+# define SPEED 0.1
+
 #include "cube3d.h"
 
 typedef struct s_player {
