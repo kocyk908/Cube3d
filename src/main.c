@@ -37,11 +37,6 @@ int main(int argc, char **argv)
     game.map.width = find_longest_row_length(game.map.board);
     game.map.height = game.textures.height_util;
 
-    printf("map 1 %i\n", count_rows(game.map.file_path));
-    printf("map height: %d\n", game.map.height);
-    //print_map(game.map.board);
-    //printf("\n\n");
-
     //      validacja mapy
     
     if (!is_map_valid(game))
@@ -65,7 +60,7 @@ int main(int argc, char **argv)
 
     game.player.dir_x = 1;
     game.player.dir_y = 0;
-    game.player.fov = 2 * PI;
+    game.player.fov = PI/3;
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
@@ -89,8 +84,8 @@ void move_player(t_game *game)
 
     cos_angle = cos(game->player.angle);
     sin_angle = sin(game->player.angle);
-    angle_speed = 0.03;
-    speed = 0.1;
+    angle_speed = 0.1;
+    speed = 0.15;
     if (game->player.left_rotate)
         game->player.angle -= angle_speed;
     if (game->player.right_rotate)
@@ -130,6 +125,8 @@ void move_player(t_game *game)
 
 bool touch(double px, double py, t_game *game)
 {
+    if (px < 0 || px >= game->map.width * BLOCK || py < 0 || py >= game->map.height * BLOCK)
+        return (true);
     int x = (int)(py / BLOCK);
     int y = (int)(px / BLOCK);
     if(game->map.board_with_spaces[x][y] == '1')
@@ -139,9 +136,23 @@ bool touch(double px, double py, t_game *game)
     return (false);
 }
 
+double distance(float x, float y)
+{
+    return sqrt(x * x + y * y);
+}
+
+double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
+{
+    double delta_x = x2 - x1;
+    double delta_y = y2 - y1;
+    double angle = atan2(delta_y, delta_x) - game->player.angle;
+    double fixed_dist = distance(delta_x, delta_y) * cos(angle);
+
+    return fixed_dist;
+}
+
 void draw_line(t_player *player, t_game *game, double start_x, int i)
 {
-    (void)i;
     double cos_angle = cos(start_x);
     double sin_angle = sin(start_x);
     double ray_x = player->x * BLOCK;
@@ -149,9 +160,19 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
 
     while(!touch(ray_x, ray_y, game))
     {
-        put_pixel(ray_x, ray_y, 0xFF0000, game);
+        //put_pixel(ray_x, ray_y, 0xFF0000, game);
         ray_x += cos_angle;
         ray_y += sin_angle;
+    }
+
+    double dist = fixed_dist(player->x * BLOCK, player->y * BLOCK, ray_x, ray_y, game);
+    double height = (BLOCK / dist) * (WIDTH / 2);
+    int start = (HEIGHT - height) / 2;
+    int end = start + height;
+    while(start < end)
+    {
+        put_pixel(i, start, 0x00FF00, game);
+        start++;
     }
 }
 
@@ -162,13 +183,13 @@ int draw_loop(t_game *game)
     player = &game->player;
     move_player(game);
     clear_image(game);
-    draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
-    draw_map(game);
+    //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
+    //draw_map(game);
     
     double fraction = game->player.fov / WIDTH;
     double start_x = player->angle - (game->player.fov / 2);
     int i = 0;
-    while(i < game->map.width)
+    while(i < WIDTH)
     {
         draw_line(player, game, start_x, i);
         start_x += fraction;
