@@ -18,7 +18,7 @@
 
 # define PI 3.14159265359
 
-# define SPEED 0.1
+# define SPEED 0.02
 
 #include "cube3d.h"
 
@@ -104,15 +104,10 @@ int ft_isspace(char c);
 char **read_map(t_game *game);
 char **read_file(char *file_path);
 
-int handle_key_press(int keycode, t_game *game);
 
 void player_pos(t_game *game);
 
 
-
-
-void	adding_in_graphics(t_game *game);
-void	place_images_in_game(t_game *game);
 
 
 
@@ -126,8 +121,4 @@ void    draw_map(t_game *game);
 void    put_pixel(int x, int y, int color, t_game *game);
 
 
-void keyboard_d(t_game *game, double i);
-void keyboard_a(t_game *game, double i);
-void keyboard_s(t_game *game, double i);
-void keyboard_w(t_game *game, double i);
 #endif

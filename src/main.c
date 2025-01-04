@@ -67,6 +67,7 @@ int main(int argc, char **argv)
     //place_images_in_game(&game);
     mlx_hook(game.window.win_ptr, 2, 1L<<0, key_pressed, &game); 
     mlx_hook(game.window.win_ptr, 3, 1L<<1, key_release, &game);
+    mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
 
     // mlx_key_hook(game.window.win_ptr, controls_working, &game);
     mlx_loop_hook(game.window.mlx_ptr, draw_loop, &game);
@@ -87,7 +88,7 @@ void move_player(t_game *game)
 
     cos_angle = cos(game->player.angle);
     sin_angle = sin(game->player.angle);
-    angle_speed = 0.1;
+    angle_speed = 0.01;
     speed = SPEED;
 
     // Obrót gracza
@@ -192,9 +193,11 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
     double height = (BLOCK / dist) * (WIDTH / 2);
     int start = (HEIGHT - height) / 2;
     int end = start + height;
+
     while(start < end)
     {
-        put_pixel(i, start, 0x00FF00, game);
+
+        put_pixel(i, start, 0xFF0000, game);
         start++;
     }
 }
