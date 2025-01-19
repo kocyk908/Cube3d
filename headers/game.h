@@ -60,6 +60,16 @@ typedef struct s_textures {
     int height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
 } t_textures;
 
+typedef struct s_texture {
+    void    *img;          // Wskaźnik obrazu MLX
+    char    *data;         // Surowe dane obrazu (piksele)
+    int     width;         // Szerokość tekstury
+    int     height;        // Wysokość tekstury
+    int     bpp;           // Bity na piksel
+    int     size_line;     // Rozmiar linii (w bajtach)
+    int     endian;        // Kolejność bajtów
+} t_texture;
+
 typedef struct s_window
 {
     void    *mlx_ptr;
@@ -79,7 +89,6 @@ typedef struct s_game {
     t_map map;        // Dane mapy
     t_textures textures; // Dane tekstur
 } t_game;
-
 
 // Prototypy funkcji
 int init_game(t_game *game);
@@ -110,7 +119,6 @@ void player_pos(t_game *game);
 
 
 
-
 // FUNKCJE Z FILMU
 void    draw_square(int x, int y, int size, int color, t_game *game);
 int key_pressed(int command, t_game *game);
@@ -119,6 +127,8 @@ int draw_loop(t_game *game);
 void    clear_image(t_game *game);
 void    draw_map(t_game *game);
 void    put_pixel(int x, int y, int color, t_game *game);
+
+void display_texture(const char *file_path, void *mlx_ptr, void *win_ptr);
 
 
 #endif

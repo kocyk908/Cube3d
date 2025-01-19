@@ -65,13 +65,14 @@ int main(int argc, char **argv)
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
+    
     mlx_hook(game.window.win_ptr, 2, 1L<<0, key_pressed, &game); 
     mlx_hook(game.window.win_ptr, 3, 1L<<1, key_release, &game);
     mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
 
-    // mlx_key_hook(game.window.win_ptr, controls_working, &game);
+     //mlx_key_hook(game.window.win_ptr, controls_working, &game);
     mlx_loop_hook(game.window.mlx_ptr, draw_loop, &game);
-    // mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
+    mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
     mlx_loop(game.window.mlx_ptr); //open window
 
     return (0);

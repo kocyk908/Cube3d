@@ -48,10 +48,16 @@ int parse_color(char *line, int *color)
 
 int parse_texture(char *line, int j, char **texture)
 {
+    int len;
+
     j += 2; // Przesuń wskaźnik po prefiksie (np. "NO")
     while (line[j] == ' ')
         j++; // Pomiń spacje
-    *texture = ft_strdup(&line[j]); // Przypisz teksturę
+    *texture = ft_strdup(&line[j]);
+    // Usuń znak nowej linii na końcu tekstury, jeśli istnieje
+    len = ft_strlen(*texture);
+    if (len > 0 && (*texture)[len - 1] == '\n')
+        (*texture)[len - 1] = '\0';
     if (*texture == NULL)
     {
         printf("Error: Memory allocation failed for texture\n");
