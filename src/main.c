@@ -177,94 +177,56 @@ double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
     return fixed_dist;
 }
 
-void draw_textured_wall(t_game *game, t_texture *texture, int column, int start, int end, double wall_x, double wall_height)
+
+void draw_line(t_player *player, t_game *game, double start_x, int i)
 {
-    double step = (double)texture->height / wall_height; // Skok w teksturze na piksel
-    double tex_pos = (start - HEIGHT / 2 + wall_height / 2) * step; // Pozycja początkowa w teksturze
+    double cos_angle = cos(start_x);
+    double sin_angle = sin(start_x);
+    double ray_x = player->x * BLOCK;
+    double ray_y = player->y * BLOCK;
 
-    for (int y = start; y < end; y++)
+    while(!touch(ray_x, ray_y, game))
     {
-        int tex_y = (int)tex_pos & (texture->height - 1); // Współrzędna Y na teksturze
-        tex_pos += step; // Przesunięcie pozycji na teksturze
-
-        int tex_x = (int)(wall_x * texture->width) & (texture->width - 1); // Współrzędna X na teksturze
-
-        // Pobranie koloru piksela z tekstury
-        int color = *(int *)(texture->data + (tex_y * texture->size_line + tex_x * (texture->bpp / 8)));
-
-        // Rysowanie piksela
-        put_pixel(column, y, color, game);
-    }
-}
-
-void draw_line(t_player *player, t_game *game, double ray_angle, int column)
-{
-    double ray_x = player->x;
-    double ray_y = player->y;
-    double cos_angle = cos(ray_angle);
-    double sin_angle = sin(ray_angle);
-
-    // Znajdź punkt trafienia promienia
-    while (!touch(ray_x * BLOCK, ray_y * BLOCK, game))
-    {
-        ray_x += cos_angle * 0.01;
-        ray_y += sin_angle * 0.01;
+        //put_pixel(ray_x, ray_y, 0xFF0000, game);
+        ray_x += cos_angle;
+        ray_y += sin_angle;
     }
 
-    // Oblicz dystans i wysokość ściany
-    double dist = fixed_dist(player->x, player->y, ray_x, ray_y, game);
-    double wall_height = (BLOCK / dist) * (WIDTH / 2);
-    int start = (HEIGHT - wall_height) / 2;
-    int end = start + wall_height;
+    double dist = fixed_dist(player->x * BLOCK, player->y * BLOCK, ray_x, ray_y, game);
+    double height = (BLOCK / dist) * (WIDTH / 2);
+    int start = (HEIGHT - height) / 2;
+    int end = start + height;
 
-    // Ustal kierunek ściany (north, south, west, east)
-    int wall_direction;
-    if (fabs(cos_angle) > fabs(sin_angle))
-        wall_direction = (cos_angle > 0) ? 3 : 2; // East or West
-    else
-        wall_direction = (sin_angle > 0) ? 1 : 0; // South or North
+    while(start < end)
+    {
 
-    // Wybierz teksturę
-    t_texture *texture;
-    if (wall_direction == 0)
-        texture = &game->textures.north;
-    else if (wall_direction == 1)
-        texture = &game->textures.south;
-    else if (wall_direction == 2)
-        texture = &game->textures.west;
-    else
-        texture = &game->textures.east;
-
-    // Oblicz pozycję na teksturze
-    double wall_x;
-    if (wall_direction == 2 || wall_direction == 3) // West or East
-        wall_x = ray_y - floor(ray_y);
-    else // North or South
-        wall_x = ray_x - floor(ray_x);
-
-    // Renderuj ścianę z teksturą
-    draw_textured_wall(game, texture, column, start, end, wall_x, wall_height);
+        put_pixel(i, start, 0xFF0000, game);
+        start++;
+    }
 }
 
 int draw_loop(t_game *game)
 {
-    t_player *player = &game->player;
-    move_player(game); // Obsługa ruchu gracza
-    clear_image(game); // Czyszczenie bufora obrazu
-
-    double ray_angle = player->angle - (player->fov / 2);
-    double angle_step = player->fov / WIDTH;
-
-    for (int column = 0; column < WIDTH; column++)
+    t_player *player;
+    
+    player = &game->player;
+    move_player(game);
+    clear_image(game);
+    //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
+    //draw_map(game);
+    
+    double fraction = game->player.fov / WIDTH;
+    double start_x = player->angle - (game->player.fov / 2);
+    int i = 0;
+    while(i < WIDTH)
     {
-        draw_line(player, game, ray_angle, column); // Rysuj ścianę dla każdej kolumny
-        ray_angle += angle_step;
+        draw_line(player, game, start_x, i);
+        start_x += fraction;
+        i++;
     }
-
     mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
     return (0);
 }
-
 
 void set_angle(t_game *game)
 {
