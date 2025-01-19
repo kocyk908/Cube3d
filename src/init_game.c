@@ -52,8 +52,24 @@ void init_player(t_player *player)
     
 }
 
+void init_textures_util(t_texture *direction)
+{
+    direction->img = NULL;
+    direction->data = NULL;
+    direction->width = 0;
+    direction->height = 0;
+    direction->bpp = 0;
+    direction->size_line = 0;
+    direction->endian = 0;
+}
+
 void init_textures(t_textures *textures)
 {
+    init_textures_util(&textures->north);
+    init_textures_util(&textures->south);
+    init_textures_util(&textures->west);
+    init_textures_util(&textures->east);
+
     textures->north_texture = NULL;
     textures->south_texture = NULL;
     textures->west_texture = NULL;

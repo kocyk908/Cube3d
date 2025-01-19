@@ -56,6 +56,7 @@ int main(int argc, char **argv)
         return (1);
     }
 
+    load_textures(&game); // ustawianie textur do t_texture north itd
 
           //  return 0;
 

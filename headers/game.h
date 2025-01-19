@@ -50,16 +50,6 @@ typedef struct s_map {
     char **board_with_spaces;
 } t_map;
 
-typedef struct s_textures {
-    char *north_texture;
-    char *south_texture;
-    char *west_texture;
-    char *east_texture;
-    int floor_color[3];  // RGB dla F
-    int ceiling_color[3]; // RGB dla C
-    int height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
-} t_textures;
-
 typedef struct s_texture {
     void    *img;          // Wskaźnik obrazu MLX
     char    *data;         // Surowe dane obrazu (piksele)
@@ -69,6 +59,20 @@ typedef struct s_texture {
     int     size_line;     // Rozmiar linii (w bajtach)
     int     endian;        // Kolejność bajtów
 } t_texture;
+
+typedef struct s_textures {
+    t_texture north;
+    t_texture south;
+    t_texture west;
+    t_texture east;
+    char *north_texture;
+    char *south_texture;
+    char *west_texture;
+    char *east_texture;
+    int floor_color[3];  // RGB dla F
+    int ceiling_color[3]; // RGB dla C
+    int height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
+} t_textures;
 
 typedef struct s_window
 {
@@ -128,7 +132,7 @@ void    clear_image(t_game *game);
 void    draw_map(t_game *game);
 void    put_pixel(int x, int y, int color, t_game *game);
 
-void display_texture(const char *file_path, void *mlx_ptr, void *win_ptr);
+void load_textures(t_game *game);
 
 
 #endif

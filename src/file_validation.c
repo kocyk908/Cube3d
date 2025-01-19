@@ -135,6 +135,20 @@ int look_for_textures(t_game *game)
 }
 
 
+void load_texture(t_game *game, t_texture *texture, char *path)
+{
+    texture->img = mlx_xpm_file_to_image(game->window.mlx_ptr, path, &texture->width, &texture->height);
+    texture->data = mlx_get_data_addr(texture->img, &texture->bpp, &texture->size_line, &texture->endian);
+}
+
+void load_textures(t_game *game)
+{
+    load_texture(game, &game->textures.north, game->textures.north_texture);
+    load_texture(game, &game->textures.south, game->textures.south_texture);
+    load_texture(game, &game->textures.west, game->textures.west_texture);
+    load_texture(game, &game->textures.east, game->textures.east_texture);
+}
+
 // Funkcja główna do odczytu danych gry i zwrócenia liczby odczytanych linii
 int read_textures(t_game *game)
 {
