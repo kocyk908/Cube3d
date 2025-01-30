@@ -176,18 +176,16 @@ double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
 
     return fixed_dist;
 }
-
-
 void draw_line(t_player *player, t_game *game, double start_x, int i)
 {
     double cos_angle = cos(start_x);
     double sin_angle = sin(start_x);
     double ray_x = player->x * BLOCK;
     double ray_y = player->y * BLOCK;
+    int hit_vertical = 0;
 
-    while(!touch(ray_x, ray_y, game))
+    while (!touch(ray_x, ray_y, game))
     {
-        //put_pixel(ray_x, ray_y, 0xFF0000, game);
         ray_x += cos_angle;
         ray_y += sin_angle;
     }
@@ -197,13 +195,53 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
     int start = (HEIGHT - height) / 2;
     int end = start + height;
 
-    while(start < end)
-    {
+    // Wybór tekstury (na razie jedna)
+    t_texture *tex = &game->textures.west;
 
-        put_pixel(i, start, 0xFF0000, game);
-        start++;
+    // Współrzędna X w teksturze (normalizowana od 0 do 1)
+    double wall_x = fmod(ray_x / BLOCK, 1.0);
+    if (hit_vertical) // Jeśli uderzyliśmy w pionową ścianę, przesuwamy na Y
+        wall_x = fmod(ray_y / BLOCK, 1.0);
+    int tex_x = (int)(wall_x * tex->width);
+
+    // Rysowanie ściany pionowej
+    int y = start;
+    while (y < end)
+    {
+        int tex_y = ((y - start) * tex->height) / height;
+        int tex_offset = (tex_y * tex->size_line) + (tex_x * (tex->bpp / 8));
+        int color = *(int *)(tex->data + tex_offset);
+        put_pixel(i, y, color, game);
+        y++;
     }
 }
+
+// void draw_line(t_player *player, t_game *game, double start_x, int i)
+// {
+//     double cos_angle = cos(start_x);
+//     double sin_angle = sin(start_x);
+//     double ray_x = player->x * BLOCK;
+//     double ray_y = player->y * BLOCK;
+
+//     while(!touch(ray_x, ray_y, game))
+//     {
+//         //put_pixel(ray_x, ray_y, 0xFF0000, game);
+//         ray_x += cos_angle;
+//         ray_y += sin_angle;
+//     }
+
+//     double dist = fixed_dist(player->x * BLOCK, player->y * BLOCK, ray_x, ray_y, game);
+//     double height = (BLOCK / dist) * (WIDTH / 2);
+//     int start = (HEIGHT - height) / 2;
+//     int end = start + height;
+
+//     while(start < end)
+//     {
+
+//         put_pixel(i, start, 0xFF0000, game);
+//         start++;
+//     }
+// }
 
 int draw_loop(t_game *game)
 {
