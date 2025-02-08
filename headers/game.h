@@ -41,6 +41,22 @@ typedef struct s_player {
     char    NSWE;
 } t_player;
 
+typedef struct s_ray
+{
+    double dir_x, dir_y; // Kierunek promienia
+    int map_x, map_y;    // Aktualna pozycja w siatce mapy
+    double side_dist_x, side_dist_y; // Odległości do kolejnych ścian
+    double delta_dist_x, delta_dist_y; // Różnice między kolejnymi skokami w osi X i Y
+    double perp_wall_dist; // Odległość do ściany
+    int step_x, step_y;  // Kierunek kroków DDA
+    int hit;             // Czy promień trafił w ścianę?
+    int side;            // 0 = pionowa ściana, 1 = pozioma ściana
+    double wall_x;       // Pozycja uderzenia w ścianę (do teksturowania)
+    int tex_x;           // Współrzędna X tekstury
+} t_ray;
+
+
+
 typedef struct s_map {
     char *file_path; // Ścieżka do pliku z mapą
     int width;
@@ -88,6 +104,7 @@ typedef struct s_window
 
 
 typedef struct s_game {
+    t_ray ray;
     t_window window;  // Dane okna MLX
     t_player player;  // Dane gracza
     t_map map;        // Dane mapy
@@ -133,6 +150,10 @@ void    draw_map(t_game *game);
 void    put_pixel(int x, int y, int color, t_game *game);
 
 void load_textures(t_game *game);
+
+
+void calculate_texture(t_game *game);
+void perform_dda(t_game *game);
 
 
 #endif

@@ -178,109 +178,111 @@ double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
 }
 void draw_line(t_player *player, t_game *game, double start_x, int i)
 {
-    double cos_angle = cos(start_x);
-    double sin_angle = sin(start_x);
-    double ray_x = player->x * BLOCK;
-    double ray_y = player->y * BLOCK;
-    int hit_vertical = 0;
+    t_ray *ray = &game->ray;
 
-    while (!touch(ray_x, ray_y, game))
+    // Inicjalizacja promienia
+    ray->dir_x = cos(start_x);
+    ray->dir_y = sin(start_x);
+    ray->map_x = (int)player->x;
+    ray->map_y = (int)player->y;
+
+    // Obliczenie wartości dla DDA
+    ray->delta_dist_x = fabs(1 / ray->dir_x);
+    ray->delta_dist_y = fabs(1 / ray->dir_y);
+
+    if (ray->dir_x < 0)
     {
-        ray_x += cos_angle;
-        ray_y += sin_angle;
+        ray->step_x = -1;
+        ray->side_dist_x = (player->x - ray->map_x) * ray->delta_dist_x;
+    }
+    else
+    {
+        ray->step_x = 1;
+        ray->side_dist_x = (ray->map_x + 1.0 - player->x) * ray->delta_dist_x;
+    }
+    
+    if (ray->dir_y < 0)
+    {
+        ray->step_y = -1;
+        ray->side_dist_y = (player->y - ray->map_y) * ray->delta_dist_y;
+    }
+    else
+    {
+        ray->step_y = 1;
+        ray->side_dist_y = (ray->map_y + 1.0 - player->y) * ray->delta_dist_y;
     }
 
-    double dist = fixed_dist(player->x * BLOCK, player->y * BLOCK, ray_x, ray_y, game);
-    double height = (BLOCK / dist) * (WIDTH / 2);
-    int start = (HEIGHT - height) / 2;
-    int end = start + height;
+    // Wykonanie DDA do znalezienia ściany
+    ray->hit = 0;
+    perform_dda(game);
 
-    // Wybór tekstury (na razie jedna)
-    t_texture *tex = &game->textures.east;
+    // Obliczenie dystansu do ściany
+    if (ray->side == 0)
+        ray->perp_wall_dist = (ray->map_x - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
+    else
+        ray->perp_wall_dist = (ray->map_y - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
 
-    // Współrzędna X w teksturze (normalizowana od 0 do 1)
-    double wall_x = fmod(ray_x / BLOCK, 1.0);
-    if (hit_vertical) // Jeśli uderzyliśmy w pionową ścianę, przesuwamy na Y
-        wall_x = fmod(ray_y / BLOCK, 1.0);
-    int tex_x = (int)(wall_x * tex->width);
+    // Korekcja efektu rybiego oka
+    ray->perp_wall_dist *= cos(player->angle - atan2(ray->dir_y, ray->dir_x));
 
-    // Rysowanie ściany pionowej
-    int y = start;
-    while (y < end)
+    // Obliczenie wysokości ściany
+    int lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
+
+    // Określenie górnej i dolnej krawędzi ściany
+    int drawStart = -lineHeight / 2 + HEIGHT / 2;
+    if (drawStart < 0) drawStart = 0;
+    
+    int drawEnd = lineHeight / 2 + HEIGHT / 2;
+    if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
+
+    // Wybór tekstury na podstawie kierunku uderzenia
+    t_texture *tex;
+    if (ray->side == 0)
     {
-        int tex_y = ((y - start) * tex->height) / height;
-        int tex_offset = (tex_y * tex->size_line) + (tex_x * (tex->bpp / 8));
+        if (ray->step_x > 0)
+            tex = &game->textures.east;
+        else
+            tex = &game->textures.west;
+    }
+    else
+    {
+        if (ray->step_y > 0)
+            tex = &game->textures.south;
+        else
+            tex = &game->textures.north;
+    }
+
+    // Obliczenie X-owej współrzędnej tekstury
+    if (ray->side == 0)
+        ray->wall_x = player->y + ray->perp_wall_dist * ray->dir_y;
+    else
+        ray->wall_x = player->x + ray->perp_wall_dist * ray->dir_x;
+    
+    ray->wall_x -= floor(ray->wall_x);
+    ray->tex_x = (int)(ray->wall_x * (double)tex->width);
+
+    if (ray->side == 0 && ray->dir_x > 0)
+        ray->tex_x = tex->width - ray->tex_x - 1;
+    if (ray->side == 1 && ray->dir_y < 0)
+        ray->tex_x = tex->width - ray->tex_x - 1;
+
+    // Rysowanie ściany
+    int y = drawStart;
+    while (y < drawEnd)
+    {
+        int tex_y = (int)(((y - drawStart) * tex->height) / (double)lineHeight);
+        if (tex_y < 0) tex_y = 0;  // Zabezpieczenie przed przekroczeniem zakresu
+
+        int tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
         int color = *(int *)(tex->data + tex_offset);
+
         put_pixel(i, y, color, game);
         y++;
     }
 }
-void draw_minimap(t_game *game)
-{
-    int minimap_size = 200;  // Rozmiar minimapy (szerokość i wysokość)
-    int minimap_x = 10;      // Współrzędne minimapy na ekranie
-    int minimap_y = 10;
 
-    // Rysowanie tła minimapy (ciemniejsze)
-    int color = 0x000000;  // Kolor tła minimapy (czarny)
-    int x, y;
-    for (x = minimap_x; x < minimap_x + minimap_size; x++)
-    {
-        for (y = minimap_y; y < minimap_y + minimap_size; y++)
-        {
-            put_pixel(x, y, color, game);  // Rysowanie tła
-        }
-    }
 
-    // Rysowanie ścian na minimapie
-    for (int row = 0; row < game->map.height; row++)
-    {
-        for (int col = 0; col < game->map.width; col++)
-        {
-            // Sprawdzamy, czy dany punkt to ściana
-            if (game->map.board[row][col] == '1') // Ściana
-            {
-                int map_x = minimap_x + col * (minimap_size / game->map.width);
-                int map_y = minimap_y + row * (minimap_size / game->map.height);
-                color = 0xFFFFFF;  // Kolor ściany (biały)
-                put_pixel(map_x, map_y, color, game);  // Rysowanie ściany
-            }
-        }
-    }
 
-    // Rysowanie gracza na minimapie (mały punkt)
-    int player_x = minimap_x + (game->player.x * (minimap_size / game->map.width));
-    int player_y = minimap_y + (game->player.y * (minimap_size / game->map.height));
-    color = 0xFF0000;  // Kolor gracza (czerwony)
-    put_pixel(player_x, player_y, color, game);  // Rysowanie gracza
-}
-void draw_line_on_minimap(int x1, int y1, int x2, int y2, int color, t_game *game)
-{
-    // Algorytm Bresenhama lub inny sposób rysowania linii na minimapie
-    int dx = abs(x2 - x1);
-    int dy = abs(y2 - y1);
-    int sx = (x1 < x2) ? 1 : -1;
-    int sy = (y1 < y2) ? 1 : -1;
-    int err = dx - dy;
-
-    while (1)
-    {
-        put_pixel(x1, y1, color, game);
-        if (x1 == x2 && y1 == y2)
-            break;
-        int e2 = err * 2;
-        if (e2 > -dy)
-        {
-            err -= dy;
-            x1 += sx;
-        }
-        if (e2 < dx)
-        {
-            err += dx;
-            y1 += sy;
-        }
-    }
-}
 // void draw_line(t_player *player, t_game *game, double start_x, int i)
 // {
 //     double cos_angle = cos(start_x);
@@ -307,19 +309,6 @@ void draw_line_on_minimap(int x1, int y1, int x2, int y2, int color, t_game *gam
 //         start++;
 //     }
 // }
-void draw_player_direction(t_game *game, int minimap_x, int minimap_y, int minimap_size)
-{
-    int player_minimap_x = minimap_x + (game->player.x * (minimap_size / game->map.width));
-    int player_minimap_y = minimap_y + (game->player.y * (minimap_size / game->map.height));
-    
-    double direction_angle = game->player.angle;
-    int direction_x = player_minimap_x + cos(direction_angle) * 10;  // 10 to długość linii
-    int direction_y = player_minimap_y + sin(direction_angle) * 10;
-
-    // Rysowanie linii wskazującej kierunek gracza
-    int color = 0x00FF00;  // Kolor linii (zielony)
-    draw_line_on_minimap(player_minimap_x, player_minimap_y, direction_x, direction_y, color, game);
-}
 
 int draw_loop(t_game *game)
 {
@@ -340,7 +329,6 @@ int draw_loop(t_game *game)
         start_x += fraction;
         i++;
     }
-    draw_minimap(game);
     mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
     return (0);
 }
