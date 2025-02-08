@@ -25,7 +25,7 @@
 typedef struct s_player {
     double x;    // Pozycja X gracza
     double y;    // Pozycja Y gracza
-    double angle; // Kąt patrzenia gracza
+    //double angle; // Kąt patrzenia gracza
 
     bool    key_up;
     bool    key_down;
@@ -35,9 +35,12 @@ typedef struct s_player {
     bool    left_rotate;
     bool    right_rotate;
 
+    double plane_x;
+    double plane_y; // Wektor kamery (perspektywa FOV)
+
     double dir_x; // Kierunek X
     double dir_y; // Kierunek Y
-    double fov;   // Pole widzenia
+    //double fov;   // Pole widzenia
     char    NSWE;
 } t_player;
 

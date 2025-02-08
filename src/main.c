@@ -60,9 +60,7 @@ int main(int argc, char **argv)
 
           //  return 0;
 
-    game.player.dir_x = 1;
-    game.player.dir_y = 0;
-    game.player.fov = PI/3;
+    
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
@@ -81,33 +79,37 @@ int main(int argc, char **argv)
 
 void move_player(t_game *game)
 {
-    double speed;
-    double angle_speed;
-    double cos_angle;
-    double sin_angle;
-    double new_x;
-    double new_y;
+    double speed = SPEED;
+    double angle_speed = 0.01; // Szybkość obrotu
+    double new_x, new_y;
 
-    cos_angle = cos(game->player.angle);
-    sin_angle = sin(game->player.angle);
-    angle_speed = 0.01;
-    speed = SPEED;
-
-    // Obrót gracza
+    // Obrót gracza (aktualizacja `dir_x`, `dir_y`, `plane_x`, `plane_y`)
     if (game->player.left_rotate)
-        game->player.angle -= angle_speed;
+    {
+        double oldDirX = game->player.dir_x;
+        game->player.dir_x = game->player.dir_x * cos(angle_speed) - game->player.dir_y * sin(angle_speed);
+        game->player.dir_y = oldDirX * sin(angle_speed) + game->player.dir_y * cos(angle_speed);
+
+        double oldPlaneX = game->player.plane_x;
+        game->player.plane_x = game->player.plane_x * cos(angle_speed) - game->player.plane_y * sin(angle_speed);
+        game->player.plane_y = oldPlaneX * sin(angle_speed) + game->player.plane_y * cos(angle_speed);
+    }
     if (game->player.right_rotate)
-        game->player.angle += angle_speed;
-    if (game->player.angle > 2 * PI)
-        game->player.angle = 0;
-    if (game->player.angle < 0)
-        game->player.angle = 2 * PI;
+    {
+        double oldDirX = game->player.dir_x;
+        game->player.dir_x = game->player.dir_x * cos(-angle_speed) - game->player.dir_y * sin(-angle_speed);
+        game->player.dir_y = oldDirX * sin(-angle_speed) + game->player.dir_y * cos(-angle_speed);
+
+        double oldPlaneX = game->player.plane_x;
+        game->player.plane_x = game->player.plane_x * cos(-angle_speed) - game->player.plane_y * sin(-angle_speed);
+        game->player.plane_y = oldPlaneX * sin(-angle_speed) + game->player.plane_y * cos(-angle_speed);
+    }
 
     // Ruch do przodu
     if (game->player.key_up)
     {
-        new_x = game->player.x + cos_angle * speed;
-        new_y = game->player.y + sin_angle * speed;
+        new_x = game->player.x + game->player.dir_x * speed;
+        new_y = game->player.y + game->player.dir_y * speed;
         if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
         {
             game->player.x = new_x;
@@ -117,30 +119,30 @@ void move_player(t_game *game)
     // Ruch do tyłu
     if (game->player.key_down)
     {
-        new_x = game->player.x - cos_angle * speed;
-        new_y = game->player.y - sin_angle * speed;
+        new_x = game->player.x - game->player.dir_x * speed;
+        new_y = game->player.y - game->player.dir_y * speed;
         if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
         {
             game->player.x = new_x;
             game->player.y = new_y;
         }
     }
-    // Ruch w lewo
+    // Ruch w lewo (strafe)
     if (game->player.key_left)
     {
-        new_x = game->player.x + sin_angle * speed;
-        new_y = game->player.y - cos_angle * speed;
+        new_x = game->player.x - game->player.plane_x * speed;
+        new_y = game->player.y - game->player.plane_y * speed;
         if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
         {
             game->player.x = new_x;
             game->player.y = new_y;
         }
     }
-    // Ruch w prawo
+    // Ruch w prawo (strafe)
     if (game->player.key_right)
     {
-        new_x = game->player.x - sin_angle * speed;
-        new_y = game->player.y + cos_angle * speed;
+        new_x = game->player.x + game->player.plane_x * speed;
+        new_y = game->player.y + game->player.plane_y * speed;
         if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
         {
             game->player.x = new_x;
@@ -148,6 +150,77 @@ void move_player(t_game *game)
         }
     }
 }
+
+
+//void move_player(t_game *game)
+//{
+//    double speed;
+//    double angle_speed;
+//    double cos_angle;
+//    double sin_angle;
+//    double new_x;
+//    double new_y;
+
+//    cos_angle = cos(game->player.angle);
+//    sin_angle = sin(game->player.angle);
+//    angle_speed = 0.01;
+//    speed = SPEED;
+
+//    // Obrót gracza
+//    if (game->player.left_rotate)
+//        game->player.angle -= angle_speed;
+//    if (game->player.right_rotate)
+//        game->player.angle += angle_speed;
+//    if (game->player.angle > 2 * PI)
+//        game->player.angle = 0;
+//    if (game->player.angle < 0)
+//        game->player.angle = 2 * PI;
+
+//    // Ruch do przodu
+//    if (game->player.key_up)
+//    {
+//        new_x = game->player.x + cos_angle * speed;
+//        new_y = game->player.y + sin_angle * speed;
+//        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+//        {
+//            game->player.x = new_x;
+//            game->player.y = new_y;
+//        }
+//    }
+//    // Ruch do tyłu
+//    if (game->player.key_down)
+//    {
+//        new_x = game->player.x - cos_angle * speed;
+//        new_y = game->player.y - sin_angle * speed;
+//        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+//        {
+//            game->player.x = new_x;
+//            game->player.y = new_y;
+//        }
+//    }
+//    // Ruch w lewo
+//    if (game->player.key_left)
+//    {
+//        new_x = game->player.x + sin_angle * speed;
+//        new_y = game->player.y - cos_angle * speed;
+//        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+//        {
+//            game->player.x = new_x;
+//            game->player.y = new_y;
+//        }
+//    }
+//    // Ruch w prawo
+//    if (game->player.key_right)
+//    {
+//        new_x = game->player.x - sin_angle * speed;
+//        new_y = game->player.y + cos_angle * speed;
+//        if (game->map.board_with_spaces[(int)new_y][(int)new_x] != '1')
+//        {
+//            game->player.x = new_x;
+//            game->player.y = new_y;
+//        }
+//    }
+//}
 
 bool touch(double px, double py, t_game *game)
 {
@@ -171,18 +244,26 @@ double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
 {
     double delta_x = x2 - x1;
     double delta_y = y2 - y1;
-    double angle = atan2(delta_y, delta_x) - game->player.angle;
-    double fixed_dist = distance(delta_x, delta_y) * cos(angle);
+
+    // Obliczamy kąt promienia względem kierunku gracza
+    double ray_angle = atan2(delta_y, delta_x);
+    double player_angle = atan2(game->player.dir_y, game->player.dir_x);
+
+    // Korekcja efektu rybiego oka
+    double corrected_angle = ray_angle - player_angle;
+    double fixed_dist = distance(delta_x, delta_y) * cos(corrected_angle);
 
     return fixed_dist;
 }
-void draw_line(t_player *player, t_game *game, double start_x, int i)
+
+
+void draw_line(t_player *player, t_game *game, double camera_x, int i)
 {
     t_ray *ray = &game->ray;
 
-    // Inicjalizacja promienia
-    ray->dir_x = cos(start_x);
-    ray->dir_y = sin(start_x);
+    // Kierunek promienia (uwzględnia pole widzenia)
+    ray->dir_x = player->dir_x + player->plane_x * camera_x;
+    ray->dir_y = player->dir_y + player->plane_y * camera_x;
     ray->map_x = (int)player->x;
     ray->map_y = (int)player->y;
 
@@ -216,14 +297,14 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
     ray->hit = 0;
     perform_dda(game);
 
-    // Obliczenie dystansu do ściany
+    // Obliczenie dystansu do ściany (bez rybiego oka!)
     if (ray->side == 0)
         ray->perp_wall_dist = (ray->map_x - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
     else
         ray->perp_wall_dist = (ray->map_y - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
 
-    // Korekcja efektu rybiego oka
-    ray->perp_wall_dist *= cos(player->angle - atan2(ray->dir_y, ray->dir_x));
+    // ❌ USUWAMY BŁĘDNĄ KOREKCJĘ
+    // ray->perp_wall_dist *= cos(player->angle - atan2(ray->dir_y, ray->dir_x));
 
     // Obliczenie wysokości ściany
     int lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
@@ -283,6 +364,8 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
 
 
 
+
+
 // void draw_line(t_player *player, t_game *game, double start_x, int i)
 // {
 //     double cos_angle = cos(start_x);
@@ -312,38 +395,93 @@ void draw_line(t_player *player, t_game *game, double start_x, int i)
 
 int draw_loop(t_game *game)
 {
-    t_player *player;
-    
-    player = &game->player;
-    move_player(game);
-    clear_image(game);
-    //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
-    //draw_map(game);
-    
-    double fraction = game->player.fov / WIDTH;
-    double start_x = player->angle - (game->player.fov / 2);
+    t_player *player = &game->player;
+
+    move_player(game); // Przetwarzanie wejścia gracza
+    clear_image(game); // Czyszczenie ekranu
+
     int i = 0;
-    while(i < WIDTH)
+    while (i < WIDTH)
     {
-        draw_line(player, game, start_x, i);
-        start_x += fraction;
+        // Obliczanie pozycji kamery dla każdego piksela w poziomie
+        double camera_x = 2 * i / (double)WIDTH - 1; // Zmienna w zakresie od -1 do 1
+        draw_line(player, game, camera_x, i);
         i++;
     }
+
     mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
     return (0);
 }
 
+
+//int draw_loop(t_game *game)
+//{
+//    t_player *player;
+    
+//    player = &game->player;
+//    move_player(game);
+//    clear_image(game);
+//    //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
+//    //draw_map(game);
+    
+//    double fraction = game->player.fov / WIDTH;
+//    double start_x = player->angle - (game->player.fov / 2);
+//    int i = 0;
+//    while(i < WIDTH)
+//    {
+//        draw_line(player, game, start_x, i);
+//        start_x += fraction;
+//        i++;
+//    }
+//    mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
+//    return (0);
+//}
+
+//void set_angle(t_game *game)
+//{
+//    if (game->player.NSWE == 'N')
+//        game->player.angle = 3 * PI / 2;
+//    if (game->player.NSWE == 'S')
+//        game->player.angle = PI / 2;
+//    if (game->player.NSWE == 'E')
+//        game->player.angle = 0;
+//    if (game->player.NSWE == 'W')
+//        game->player.angle = PI;
+//}
+
 void set_angle(t_game *game)
 {
-    if (game->player.NSWE == 'N')
-        game->player.angle = 3 * PI / 2;
-    if (game->player.NSWE == 'S')
-        game->player.angle = PI / 2;
-    if (game->player.NSWE == 'E')
-        game->player.angle = 0;
-    if (game->player.NSWE == 'W')
-        game->player.angle = PI;
+    // Ustawienie domyślnego kierunku patrzenia
+    if (game->player.NSWE == 'N')  // Gracz patrzy na północ
+    {
+        game->player.dir_x = 0;
+        game->player.dir_y = -1;
+        game->player.plane_x = 0.66;
+        game->player.plane_y = 0;
+    }
+    else if (game->player.NSWE == 'S')  // Gracz patrzy na południe
+    {
+        game->player.dir_x = 0;
+        game->player.dir_y = 1;
+        game->player.plane_x = -0.66;
+        game->player.plane_y = 0;
+    }
+    else if (game->player.NSWE == 'E')  // Gracz patrzy na wschód
+    {
+        game->player.dir_x = 1;
+        game->player.dir_y = 0;
+        game->player.plane_x = 0;
+        game->player.plane_y = 0.66;
+    }
+    else if (game->player.NSWE == 'W')  // Gracz patrzy na zachód
+    {
+        game->player.dir_x = -1;
+        game->player.dir_y = 0;
+        game->player.plane_x = 0;
+        game->player.plane_y = -0.66;
+    }
 }
+
 
 void player_pos(t_game *game)
 {

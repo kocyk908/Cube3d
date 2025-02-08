@@ -37,7 +37,7 @@ void init_player(t_player *player)
 {
     player->x = 0;
     player->y = 0;
-    player->angle = 0;
+    //player->angle = 0;
 
     player->key_up = false;
     player->key_down = false;
@@ -48,7 +48,9 @@ void init_player(t_player *player)
     player->right_rotate = false;
     player->dir_x = 0;
     player->dir_y = 0;
-    player->fov = 0;
+    player->plane_x = 0;
+    player->plane_y = 0.66;
+    //player->fov = 0;
     
 }
 
