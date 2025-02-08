@@ -80,13 +80,6 @@ void set_angle(t_game *game)
 🎯 **Lepsza obsługa kolizji i płynniejsze sterowanie graczem**.  
 🎯 **Dodanie minimapy pokazującej promienie raycastingu**.  
 
----
-
-**Teraz kod działa lepiej, bez błędów związanych z obrotem i raycastingiem!**  
-🚀 **Wgraj poprawki na GitHub i sprawdź, czy wszystko działa płynnie!** 🔥
-
-
-
 
 # wyjaśnienie zmiany fov na plane_x/_y
 
@@ -165,10 +158,6 @@ camera_x	Rozciąga promienie od -1 (lewo) do 1 (prawo)
 ray_dir_x = dir_x + plane_x * camera_x	Oblicza rzeczywisty promień
 Zwiększenie plane_x	Poszerza pole widzenia (FOV)
 Zmniejszenie plane_x	Zwęża pole widzenia (FOV)
-🚀 Co teraz?
-✅ Teraz rozumiesz, jak plane_x i plane_y wpływają na raycasting!
-✅ Jeśli masz problem z FOV, wystarczy dostosować plane_x!
-✅ Jeśli chcesz zobaczyć różnice, spróbuj zmienić plane_x = 1.0 i zobacz, jak szerokie jest FOV!
 
 
 ## 20.11
