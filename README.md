@@ -1,26 +1,44 @@
 # Cube3d
 
 # Główne zmiany 08.02
-✅ Główne poprawki w kodzie
-1️⃣ Usunięcie angle i fov – zastąpienie ich dir_x, dir_y, plane_x, plane_y
-Problem: player->angle był używany do obrotu i korekcji efektu rybiego oka, co powodowało błędy.
-Rozwiązanie: Usunęliśmy angle, a do obrotu i raycastingu używamy teraz dir_x, dir_y, plane_x, plane_y.
-Zaleta: Lepsza precyzja raycastingu, poprawiona obsługa obrotu, brak błędów przy ruchu.
-🔹 Usunięto:
+## **📌 Aktualizacja projektu – poprawki w kodzie**
+W tej aktualizacji wprowadziliśmy szereg **usprawnień w raycastingu**, eliminując błędy związane z **efektem rybiego oka, błędnym obrotem kamery** i poprawiając obsługę **FOV (pola widzenia)**.  
 
+---
+
+### **🔧 Główne zmiany w kodzie**
+
+### **1️⃣ Usunięcie `angle` i `fov` – zastąpienie ich `dir_x`, `dir_y`, `plane_x`, `plane_y`**
+🔹 **Problem:**  
+`player->angle` był używany do obrotu i korekcji efektu rybiego oka, co powodowało błędy.  
+
+🔹 **Rozwiązanie:**  
+Zamiast `angle`, do obrotu i raycastingu używamy teraz **`dir_x`, `dir_y`, `plane_x`, `plane_y`**, co zapewnia **dokładniejsze obliczenia** i **lepszą obsługę pola widzenia**.  
+
+🔹 **Zmiany w kodzie:**
+```c
+// Usunięto
 game->player.angle = 0;
 game->player.fov = PI/3;
-🔹 Zamieniono na:
 
+// Zastąpiono poprawnym ustawieniem kierunku i FOV
 game->player.dir_x = 1;
 game->player.dir_y = 0;
 game->player.plane_x = 0;
-game->player.plane_y = 0.66;
-2️⃣ Poprawiona funkcja set_angle() – dynamiczne ustawianie kierunku gracza
-Problem: set_angle() ustawiało angle, ale nie wpływało na dir_x, dir_y, plane_x, plane_y.
-Rozwiązanie: Teraz set_angle() ustawia prawidłowy kierunek i pole widzenia w zależności od pozycji gracza.
-🔹 Poprawiona wersja set_angle():
+game->player.plane_y = 0.66; // Około 66° FOV
+```
 
+---
+
+### **2️⃣ Poprawiona funkcja `set_angle()` – dynamiczne ustawianie kierunku gracza**
+🔹 **Problem:**  
+Funkcja `set_angle()` ustawiała `angle`, ale **nie aktualizowała poprawnie** kierunku i pola widzenia.  
+
+🔹 **Rozwiązanie:**  
+Teraz `set_angle()` ustawia **`dir_x`, `dir_y`, `plane_x`, `plane_y`** w zależności od pozycji gracza (`N`, `S`, `E`, `W`).
+
+🔹 **Nowa wersja `set_angle()`:**
+```c
 void set_angle(t_game *game)
 {
     if (game->player.NSWE == 'N')
@@ -52,74 +70,22 @@ void set_angle(t_game *game)
         game->player.plane_y = -0.66;
     }
 }
-3️⃣ Poprawiona obsługa obrotu kamery (move_player())
-Problem: move_player() używało angle, ale nie aktualizowało dir_x, dir_y, plane_x, plane_y.
-Rozwiązanie: Teraz obrót poprawnie wpływa na kierunek gracza i kamerę.
-🔹 Poprawiona obsługa obrotu w move_player():
+```
 
-if (game->player.left_rotate)
-{
-    double oldDirX = game->player.dir_x;
-    game->player.dir_x = game->player.dir_x * cos(angle_speed) - game->player.dir_y * sin(angle_speed);
-    game->player.dir_y = oldDirX * sin(angle_speed) + game->player.dir_y * cos(angle_speed);
+---
 
-    double oldPlaneX = game->player.plane_x;
-    game->player.plane_x = game->player.plane_x * cos(angle_speed) - game->player.plane_y * sin(angle_speed);
-    game->player.plane_y = oldPlaneX * sin(angle_speed) + game->player.plane_y * cos(angle_speed);
-}
-4️⃣ Usunięcie efektu rybiego oka
-Problem: Raycasting miał błędną korekcję efektu rybiego oka, przez co ściany były zniekształcone.
-Rozwiązanie: Usunięto błędną korekcję i zastąpiono ją prawidłowym obliczeniem dystansu.
-🔹 Usunięto błędne poprawki:
+### **🔹 Co jeszcze można dodać?**
 
-ray->perp_wall_dist *= cos(player->angle - atan2(ray->dir_y, ray->dir_x));
-🔹 Poprawiona funkcja fixed_dist():
+🎯 **Możliwość zmiany FOV w czasie rzeczywistym** (np. `plane_x = 1.0` dla FOV 90°).  
+🎯 **Lepsza obsługa kolizji i płynniejsze sterowanie graczem**.  
+🎯 **Dodanie minimapy pokazującej promienie raycastingu**.  
 
-double fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
-{
-    double delta_x = x2 - x1;
-    double delta_y = y2 - y1;
+---
 
-    double ray_angle = atan2(delta_y, delta_x);
-    double player_angle = atan2(game->player.dir_y, game->player.dir_x);
+**Teraz kod działa lepiej, bez błędów związanych z obrotem i raycastingiem!**  
+🚀 **Wgraj poprawki na GitHub i sprawdź, czy wszystko działa płynnie!** 🔥
 
-    double corrected_angle = ray_angle - player_angle;
-    double fixed_dist = sqrt(delta_x * delta_x + delta_y * delta_y) * cos(corrected_angle);
 
-    return fixed_dist;
-}
-5️⃣ Poprawiona obsługa raycastingu (draw_loop() i draw_line())
-Problem: draw_loop() używało angle i fov, co powodowało problemy ze skalowaniem ścian.
-Rozwiązanie: Teraz draw_loop() używa poprawnie camera_x, dir_x i plane_x.
-🔹 Poprawiona wersja draw_loop():
-
-int draw_loop(t_game *game)
-{
-    t_player *player = &game->player;
-    move_player(game);
-    clear_image(game);
-
-    int i = 0;
-    while (i < WIDTH)
-    {
-        double camera_x = 2 * i / (double)WIDTH - 1; // Od -1 (lewa strona) do 1 (prawa strona)
-        draw_line(player, game, camera_x, i);
-        i++;
-    }
-
-    mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
-    return (0);
-}
-🚀 Podsumowanie zmian
-✅ Usunięto angle i fov, zastępując je dir_x, dir_y, plane_x, plane_y
-✅ Poprawiona obsługa obrotu kamery – teraz plane_x wpływa na FOV
-✅ Naprawiony efekt rybiego oka – ściany są teraz poprawnie wyświetlane
-✅ Poprawiona obsługa raycastingu (draw_loop()) – rysowanie promieni działa poprawnie
-
-🔧 Co jeszcze można dodać?
-🎯 Możliwość zmiany FOV w czasie rzeczywistym (zmieniając plane_x, np. plane_x = 1.0 dla FOV 90°).
-🎯 Lepsza obsługa kolizji i płynniejsze sterowanie graczem.
-🎯 Dodanie minimapy pokazującej promienie raycastingu.
 
 
 # wyjaśnienie zmiany fov na plane_x/_y
