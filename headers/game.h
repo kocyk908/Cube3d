@@ -18,7 +18,7 @@
 
 # define PI 3.14159265359
 
-# define SPEED 0.02
+# define SPEED 0.05
 
 #include "cube3d.h"
 

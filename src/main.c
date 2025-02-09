@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 void move_player(t_game *game)
 {
     double speed = SPEED;
-    double angle_speed = 0.01; // Szybkość obrotu
+    double angle_speed = 0.05; // Szybkość obrotu
     double new_x, new_y;
 
     // Obrót gracza (aktualizacja `dir_x`, `dir_y`, `plane_x`, `plane_y`)
@@ -282,7 +282,7 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
         ray->step_x = 1;
         ray->side_dist_x = (ray->map_x + 1.0 - player->x) * ray->delta_dist_x;
     }
-    
+
     if (ray->dir_y < 0)
     {
         ray->step_y = -1;
@@ -298,23 +298,25 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
     ray->hit = 0;
     perform_dda(game);
 
-    // Obliczenie dystansu do ściany (bez rybiego oka!)
+    // Obliczenie dystansu do ściany (zapobieganie dzieleniu przez zero lub bardzo małe wartości)
     if (ray->side == 0)
         ray->perp_wall_dist = (ray->map_x - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
     else
         ray->perp_wall_dist = (ray->map_y - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
 
-    // ❌ USUWAMY BŁĘDNĄ KOREKCJĘ
-    // ray->perp_wall_dist *= cos(player->angle - atan2(ray->dir_y, ray->dir_x));
+    // 🔥 Minimalna wartość dystansu, aby uniknąć błędów i "załamania" tekstur
+    if (ray->perp_wall_dist < 0.01)
+        ray->perp_wall_dist = 0.01;
 
     // Obliczenie wysokości ściany
     int lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
 
-    // Określenie górnej i dolnej krawędzi ściany
+    // Korekta - jeśli linia jest dłuższa niż ekran, rysujemy poprawnie
     int drawStart = -lineHeight / 2 + HEIGHT / 2;
-    if (drawStart < 0) drawStart = 0;
-    
     int drawEnd = lineHeight / 2 + HEIGHT / 2;
+
+    // Jeśli ściana jest wyższa niż ekran, rysowanie zaczyna się powyżej ekranu
+    if (drawStart < 0) drawStart = 0;
     if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
 
     // Wybór tekstury na podstawie kierunku uderzenia
@@ -334,12 +336,12 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
             tex = &game->textures.north;
     }
 
-    // Obliczenie X-owej współrzędnej tekstury
+    // Obliczenie współrzędnej X tekstury
     if (ray->side == 0)
         ray->wall_x = player->y + ray->perp_wall_dist * ray->dir_y;
     else
         ray->wall_x = player->x + ray->perp_wall_dist * ray->dir_x;
-    
+
     ray->wall_x -= floor(ray->wall_x);
     ray->tex_x = (int)(ray->wall_x * (double)tex->width);
 
@@ -348,12 +350,18 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
     if (ray->side == 1 && ray->dir_y < 0)
         ray->tex_x = tex->width - ray->tex_x - 1;
 
+    // 🔹 Skalowanie tekstury dla bardzo wysokich ścian
+
+    //////////////////////////////////////////////////////////////////////////////////////////// od tego momentu naprawione zostało skalowanie tekstury gdy za blisko ściany
+    double step = 1.0 * tex->height / lineHeight;
+    double texPos = (drawStart - HEIGHT / 2 + lineHeight / 2) * step;
+
     // Rysowanie ściany
     int y = drawStart;
     while (y < drawEnd)
     {
-        int tex_y = (int)(((y - drawStart) * tex->height) / (double)lineHeight);
-        if (tex_y < 0) tex_y = 0;  // Zabezpieczenie przed przekroczeniem zakresu
+        int tex_y = (int)texPos & (tex->height - 1);  // Zapewnia poprawne indeksowanie tekstury
+        texPos += step;
 
         int tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
         int color = *(int *)(tex->data + tex_offset);
@@ -362,6 +370,7 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
         y++;
     }
 }
+
 
 
 
