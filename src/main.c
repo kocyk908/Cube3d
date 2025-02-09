@@ -400,6 +400,8 @@ int draw_loop(t_game *game)
 
     move_player(game); // Przetwarzanie wejścia gracza
     clear_image(game); // Czyszczenie ekranu
+    //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
+    //draw_map(game);
 
     int i = 0;
     while (i < WIDTH)
