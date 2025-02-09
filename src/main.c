@@ -58,9 +58,9 @@ int main(int argc, char **argv)
 
     load_textures(&game); // ustawianie textur do t_texture north itd
 
+    //game.textures.final_ceiling_color = rgb_to_int(game.textures.ceiling_color[0], game.textures.ceiling_color[1], game.textures.ceiling_color[2]);
+    //game.textures.final_floor_color = rgb_to_int(game.textures.floor_color[0], game.textures.floor_color[1], game.textures.floor_color[2]);
           //  return 0;
-
-    
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
@@ -366,6 +366,7 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
         int tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
         int color = *(int *)(tex->data + tex_offset);
 
+        color = apply_fog(color, ray->perp_wall_dist);
         put_pixel(i, y, color, game);
         y++;
     }
@@ -411,6 +412,9 @@ int draw_loop(t_game *game)
     clear_image(game); // Czyszczenie ekranu
     //draw_square(player->x * BLOCK, player->y * BLOCK, 10, 0x0000FF, game);
     //draw_map(game);
+
+    draw_floor_and_ceiling(game);
+
 
     int i = 0;
     while (i < WIDTH)

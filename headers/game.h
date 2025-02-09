@@ -90,6 +90,8 @@ typedef struct s_textures {
     char *east_texture;
     int floor_color[3];  // RGB dla F
     int ceiling_color[3]; // RGB dla C
+    double final_floor_color;
+    double final_ceiling_color;
     int height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
 } t_textures;
 
@@ -157,6 +159,8 @@ void load_textures(t_game *game);
 
 void calculate_texture(t_game *game);
 void perform_dda(t_game *game);
-
+void draw_floor_and_ceiling(t_game *game);
+int apply_fog(int color, double distance);
+int rgb_to_int(int r, int g, int b);
 
 #endif

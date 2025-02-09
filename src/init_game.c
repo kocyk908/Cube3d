@@ -78,6 +78,12 @@ void init_textures(t_textures *textures)
     textures->east_texture = NULL;
     textures->floor_color[0] = -1;
     textures->ceiling_color[0] = -1;
+    textures->floor_color[1] = -1;
+    textures->ceiling_color[1] = -1;
+    textures->floor_color[2] = -1;
+    textures->ceiling_color[2] = -1;
+    textures->final_floor_color = -1;
+    textures->final_ceiling_color = -1;
     textures->height_util = 0;
 }
 
