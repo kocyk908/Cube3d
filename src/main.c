@@ -84,7 +84,7 @@ void move_player(t_game *game)
     double new_x, new_y;
 
     // Obrót gracza (aktualizacja `dir_x`, `dir_y`, `plane_x`, `plane_y`)
-    if (game->player.left_rotate)
+    if (game->player.right_rotate)  // Obrót w prawo (CW)
     {
         double oldDirX = game->player.dir_x;
         game->player.dir_x = game->player.dir_x * cos(angle_speed) - game->player.dir_y * sin(angle_speed);
@@ -94,7 +94,8 @@ void move_player(t_game *game)
         game->player.plane_x = game->player.plane_x * cos(angle_speed) - game->player.plane_y * sin(angle_speed);
         game->player.plane_y = oldPlaneX * sin(angle_speed) + game->player.plane_y * cos(angle_speed);
     }
-    if (game->player.right_rotate)
+
+    if (game->player.left_rotate)  // Obrót w lewo (CCW)
     {
         double oldDirX = game->player.dir_x;
         game->player.dir_x = game->player.dir_x * cos(-angle_speed) - game->player.dir_y * sin(-angle_speed);
