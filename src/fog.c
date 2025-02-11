@@ -13,16 +13,19 @@ int apply_fog(int color, double distance)
     return (r << 16) | (g << 8) | b;
 }
 
-//int rgb_to_int(int r, int g, int b)
-//{
-//    return (r << 16) | (g << 8) | b;
-//}
+unsigned int rgbToHex(int r, int g, int b)
+{
+    return (r << 16) | (g << 8) | b;
+}
 
 void draw_floor_and_ceiling(t_game *game)
 {
     int x, y;
-    int floor_base = 0x555555;
-    int ceiling_base = 0x333333;
+    int floor_base = 0;
+    int ceiling_base = 0;
+
+    floor_base = rgbToHex(game->textures.floor_color[0], game->textures.floor_color[1], game->textures.floor_color[2]);
+    ceiling_base = rgbToHex(game->textures.ceiling_color[0], game->textures.ceiling_color[1], game->textures.ceiling_color[2]);
 
     for (y = 0; y < HEIGHT; y++)
     {

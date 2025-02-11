@@ -64,7 +64,18 @@ int main(int argc, char **argv)
 
     // Ustawienie obsługi zdarzeń
     //place_images_in_game(&game);
-    
+    printf("%i", game.textures.ceiling_color[0]);
+    printf(" ");
+    printf("%i", game.textures.ceiling_color[1]);
+    printf(" ");
+    printf("%i", game.textures.ceiling_color[2]);
+    printf(" - ");
+    printf("%i", game.textures.floor_color[0]);
+    printf(" ");
+    printf("%i", game.textures.floor_color[1]);
+    printf(" ");
+    printf("%i", game.textures.floor_color[2]);
+    printf(" koniec\n");
     mlx_hook(game.window.win_ptr, 2, 1L<<0, key_pressed, &game); 
     mlx_hook(game.window.win_ptr, 3, 1L<<1, key_release, &game);
     mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
