@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 17:50:17 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/16 22:51:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,49 @@ unsigned int	rgb_to_hex(int r, int g, int b)
 	return ((r << 16) | (g << 8) | b);
 }
 
+int	load_floor(t_game *game)
+{
+	int		color;
+
+	color = rgb_to_hex(game->textures.floor_color[0],
+			game->textures.floor_color[1], game->textures.floor_color[2]);
+	return (color);
+}
+
+int	load_ceiling(t_game *game)
+{
+	int		color;
+
+	color = rgb_to_hex(game->textures.ceiling_color[0],
+			game->textures.ceiling_color[1], game->textures.ceiling_color[2]);
+	return (color);
+}
+
 void	draw_floor_and_ceiling(t_game *game)
 {
 	int		x;
 	int		y;
-	int		floor_base;
-	int		ceiling_base;
+	int		floor_ceiling[2];
 	double	distance;
 	int		color;
 
-	floor_base = rgb_to_hex(game->textures.floor_color[0], game->textures.floor_color[1], game->textures.floor_color[2]);
-	ceiling_base = rgb_to_hex(game->textures.ceiling_color[0], game->textures.ceiling_color[1], game->textures.ceiling_color[2]);
-	for (y = 0; y < HEIGHT; y++)
+	x = 0;
+	floor_ceiling[0] = load_floor(game);
+	floor_ceiling[1] = load_ceiling(game);
+	while (x < HEIGHT)
 	{
-		distance = HEIGHT / (2.0*y - HEIGHT);
-		color = (y < HEIGHT / 2) ? ceiling_base : floor_base;
+		y = 0;
+		distance = HEIGHT / (2.0 * x - HEIGHT);
+		if (x < HEIGHT / 2)
+			color = floor_ceiling[1];
+		else
+			color = floor_ceiling[0];
 		color = apply_fog(color, distance);
-		for (x = 0; x < WIDTH; x++)
-			put_pixel(x, y, color, game);
+		while (y < WIDTH)
+		{
+			put_pixel(y, x, color, game);
+			y++;
+		}
+		x++;
 	}
 }

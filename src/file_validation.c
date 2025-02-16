@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 17:53:56 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/16 22:26:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	invalid_char(char *line, int j)
 	{
 		if (!ft_isdigit(line[j]) && line[j] != ',' && !ft_isspace(line[j]))
 		{
-			printf("Error: Invalid character in floor definition: '%c'\n", line[j]);
+			printf("Error: Invalid character in floor: '%c'\n", line[j]);
 			return (1);
 		}
 		j++;
