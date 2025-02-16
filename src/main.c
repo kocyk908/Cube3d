@@ -138,41 +138,6 @@ void	move_player(t_game *game)
 	}
 }
 
-bool	touch(double px, double py, t_game *game)
-{
-	int		x;
-	int		y;
-
-	x = 0;
-	y = 0;
-	if (px < 0 || px >= game->map.width * BLOCK || py < 0 || py >= game->map.height * BLOCK)
-		return (true);
-	x = (int)(py / BLOCK);
-	y = (int)(px / BLOCK);
-	if (game->map.board_with_spaces[x][y] == '1')
-	{
-		return (true);
-	}
-	return (false);
-}
-
-double	distance(double x, double y)
-{
-	return (sqrt(x * x + y * y));
-}
-
-double	fixed_dist(double x1, double y1, double x2, double y2, t_game *game)
-{
-	double delta_x = x2 - x1;
-	double delta_y = y2 - y1;
-	double ray_angle = atan2(delta_y, delta_x);
-	double player_angle = atan2(game->player.dir_y, game->player.dir_x);
-	double corrected_angle = ray_angle - player_angle;
-	double fixed_dist = distance(delta_x, delta_y) * cos(corrected_angle);
-	return (fixed_dist);
-}
-
-
 void draw_line(t_player *player, t_game *game, double camera_x, int i)
 {
 	t_ray *ray = &game->ray;
