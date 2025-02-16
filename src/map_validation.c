@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 15:05:41 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/16 15:14:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	has_empty_lines_between(char **map, int height)
 
 int	is_map_valid(t_game game)
 {
-	if (!is_01SENW(game.map.board))
+	if (!is_01senw(game.map.board))
 	{
 		printf("Error is_01SENW\n");
 		return (0);
