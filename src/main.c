@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_game.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
+/*   Updated: 2025/02/16 13:34:11 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cube3d.h"
 #include "game.h" // Dodajemy plik nagłówkowy, gdzie zdefiniujemy strukturę gry i podstawowe funkcje.
 
@@ -466,41 +478,41 @@ int draw_loop(t_game *game)
 
 //void set_angle(t_game *game)
 //{
-//    if (game->player.NSWE == 'N')
+//    if (game->player.nswe == 'N')
 //        game->player.angle = 3 * PI / 2;
-//    if (game->player.NSWE == 'S')
+//    if (game->player.nswe == 'S')
 //        game->player.angle = PI / 2;
-//    if (game->player.NSWE == 'E')
+//    if (game->player.nswe == 'E')
 //        game->player.angle = 0;
-//    if (game->player.NSWE == 'W')
+//    if (game->player.nswe == 'W')
 //        game->player.angle = PI;
 //}
 
 void set_angle(t_game *game)
 {
     // Ustawienie domyślnego kierunku patrzenia
-    if (game->player.NSWE == 'N')  // Gracz patrzy na północ
+    if (game->player.nswe == 'N')  // Gracz patrzy na północ
     {
         game->player.dir_x = 0;
         game->player.dir_y = -1;
         game->player.plane_x = 0.66;
         game->player.plane_y = 0;
     }
-    else if (game->player.NSWE == 'S')  // Gracz patrzy na południe
+    else if (game->player.nswe == 'S')  // Gracz patrzy na południe
     {
         game->player.dir_x = 0;
         game->player.dir_y = 1;
         game->player.plane_x = -0.66;
         game->player.plane_y = 0;
     }
-    else if (game->player.NSWE == 'E')  // Gracz patrzy na wschód
+    else if (game->player.nswe == 'E')  // Gracz patrzy na wschód
     {
         game->player.dir_x = 1;
         game->player.dir_y = 0;
         game->player.plane_x = 0;
         game->player.plane_y = 0.66;
     }
-    else if (game->player.NSWE == 'W')  // Gracz patrzy na zachód
+    else if (game->player.nswe == 'W')  // Gracz patrzy na zachód
     {
         game->player.dir_x = -1;
         game->player.dir_y = 0;
@@ -526,7 +538,7 @@ void player_pos(t_game *game)
         {
             if (mapa[i][j] == 'N' || mapa[i][j] == 'S' || mapa[i][j] == 'E' || mapa[i][j] == 'W')
             {
-                game->player.NSWE = mapa[i][j];
+                game->player.nswe = mapa[i][j];
                 game->player.x = j;
                 game->player.y = i;
             }
