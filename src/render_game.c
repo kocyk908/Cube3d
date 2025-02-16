@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 15:00:14 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/16 22:54:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,6 @@ void	put_pixel(int x, int y, int color, t_game *game)
 	game->window.data[index + 2] = (color >> 16) & 0xFF;
 }
 
-void	draw_square(int x, int y, int size, int color, t_game *game)
-{
-	int		i;
-	int		j;
-
-	i = 0;
-	while (i < size)
-	{
-		j = 0;
-		while (j < size)
-		{
-			put_pixel(x + i, y + j, color, game);
-			j++;
-		}
-		i++;
-	}
-}
-
 void	clear_image(t_game *game)
 {
 	int		i;
@@ -55,25 +37,6 @@ void	clear_image(t_game *game)
 		while (j < HEIGHT)
 		{
 			put_pixel(i, j, 0, game);
-			j++;
-		}
-		i++;
-	}
-}
-
-void	draw_map(t_game *game)
-{
-	int		i;
-	int		j;
-
-	i = 0;
-	while (i < game->map.height)
-	{
-		j = 0;
-		while (game->map.board_with_spaces[i][j])
-		{
-			if (game->map.board_with_spaces[i][j] == '1')
-				draw_square(j * 64, i * 64, 64, 0xFFFFFF, game);
 			j++;
 		}
 		i++;
