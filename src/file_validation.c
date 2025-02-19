@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 22:26:43 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/19 23:16:42 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,24 +54,58 @@ int	parse_color(char *line, int *color)
 	return (1);
 }
 
+void	free_textures(t_game *game)
+{
+	// Free MinilibX images if they were allocated
+	if (game->textures.north.img)
+		mlx_destroy_image(game->window.mlx_ptr, game->textures.north.img);
+	if (game->textures.south.img)
+		mlx_destroy_image(game->window.mlx_ptr, game->textures.south.img);
+	if (game->textures.west.img)
+		mlx_destroy_image(game->window.mlx_ptr, game->textures.west.img);
+	if (game->textures.east.img)
+		mlx_destroy_image(game->window.mlx_ptr, game->textures.east.img);
+
+	// Free texture paths (from `ft_strdup()`)
+	if (game->textures.north_texture)
+		free(game->textures.north_texture);
+	if (game->textures.south_texture)
+		free(game->textures.south_texture);
+	if (game->textures.west_texture)
+		free(game->textures.west_texture);
+	if (game->textures.east_texture)
+		free(game->textures.east_texture);
+}
+
 int	parse_texture(char *line, int j, char **texture)
 {
 	int		len;
+	char	*new_texture;
 
 	j += 2;
 	while (line[j] == ' ')
 		j++;
-	*texture = ft_strdup(&line[j]);
-	len = ft_strlen(*texture);
-	if (len > 0 && (*texture)[len - 1] == '\n')
-		(*texture)[len - 1] = '\0';
-	if (*texture == NULL)
+
+	new_texture = ft_strdup(&line[j]); // Store in a temporary variable
+	if (!new_texture)
 	{
 		printf("Error: Memory allocation failed for texture\n");
 		return (0);
 	}
+
+	// Free the old texture before assigning a new one
+	if (*texture)
+		free(*texture);
+
+	*texture = new_texture;
+
+	len = ft_strlen(*texture);
+	if (len > 0 && (*texture)[len - 1] == '\n')
+		(*texture)[len - 1] = '\0';
+
 	return (1);
 }
+
 
 int	look_for_textures(t_game *game)
 {
@@ -135,20 +169,45 @@ int	look_for_textures(t_game *game)
 	return (i);
 }
 
-void	load_texture(t_game *game, t_texture *texture, char *path)
+int	load_texture(t_game *game, t_texture *texture, char *path)
 {
-	texture->img = mlx_xpm_file_to_image(game->window.mlx_ptr,
-			path, &texture->width, &texture->height);
-	texture->data = mlx_get_data_addr(texture->img, &texture->bpp,
-			&texture->size_line, &texture->endian);
+	int fd;
+
+	fd = 0;
+	if (!path)
+	{
+		printf("Error: Missing texture file path.\n");
+		return (0);
+	}
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Error: Texture file not found");
+		return (0);
+	}
+	close(fd);
+	texture->img = mlx_xpm_file_to_image(game->window.mlx_ptr, path, &texture->width, &texture->height);
+	if (!texture->img)
+	{
+		printf("Error: Failed to load texture from %s\n", path);
+		return (0);
+	}
+	texture->data = mlx_get_data_addr(texture->img, &texture->bpp, &texture->size_line, &texture->endian);
+	return (1);
 }
 
-void	load_textures(t_game *game)
+
+int	load_textures(t_game *game)
 {
-	load_texture(game, &game->textures.north, game->textures.north_texture);
-	load_texture(game, &game->textures.south, game->textures.south_texture);
-	load_texture(game, &game->textures.west, game->textures.west_texture);
-	load_texture(game, &game->textures.east, game->textures.east_texture);
+	if (!load_texture(game, &game->textures.north, game->textures.north_texture) ||
+		!load_texture(game, &game->textures.south, game->textures.south_texture) ||
+		!load_texture(game, &game->textures.west, game->textures.west_texture) ||
+		!load_texture(game, &game->textures.east, game->textures.east_texture))
+	{
+		printf("Error: Failed to load one or more textures.\n");
+		return (0);
+	}
+	return (1);
 }
 
 int	read_textures(t_game *game)
@@ -156,7 +215,7 @@ int	read_textures(t_game *game)
 	int		line_count;
 
 	line_count = look_for_textures(game);
-	if (line_count == -1)
+	if (line_count == -1 || line_count == 0)
 	{
 		return (0);
 	}

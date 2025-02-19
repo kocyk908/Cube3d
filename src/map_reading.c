@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 15:17:44 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/19 23:01:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,17 @@ char	**read_file(char *file_path)
 	}
 	while ((line = get_next_line(fd)))
 	{
-		file[added_row++] = ft_strdup(line);
+		file[added_row] = ft_strdup(line);
+		if (!file[added_row])
+		{
+			perror("Error allocating memory for line");
+			free(line);
+			free_map(file); // Free all previously allocated lines
+			close(fd);
+			return (NULL);
+		}
 		free(line);
+		added_row++;
 	}
 	close(fd);
 	file[added_row] = NULL;

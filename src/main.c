@@ -37,6 +37,8 @@ int	main(int argc, char **argv)
 	}
 	if (!read_textures(&game))
 	{
+		free_map(game.map.file);
+		free_textures(&game);
 		printf("read_textures issue");
 		return (0);
 	}
@@ -55,7 +57,19 @@ int	main(int argc, char **argv)
 		printf("Error: Failed to initialize window\n");
 		return (1);
 	}
-	load_textures(&game);
+	if (!load_textures(&game))
+	{
+		free_textures(&game);
+		free_map(game.map.board);
+		free_map(game.map.board_with_spaces);
+		free_map(game.map.file);
+		mlx_clear_window(game.window.mlx_ptr, game.window.win_ptr);
+		mlx_destroy_window(game.window.mlx_ptr, game.window.win_ptr);
+		mlx_destroy_image(game.window.mlx_ptr, game.window.img);
+		mlx_destroy_display(game.window.mlx_ptr);
+		free(game.window.mlx_ptr);
+		return (1);
+	}
 	mlx_hook(game.window.win_ptr, 2, 1L<<0, key_pressed, &game); 
 	mlx_hook(game.window.win_ptr, 3, 1L<<1, key_release, &game);
 	mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
@@ -71,7 +85,7 @@ int	main(int argc, char **argv)
 
 	free_map(game.map.board);
 	free_map(game.map.board_with_spaces);
-	free(game.map.file);
+	free_map(game.map.file);
 
 	return (0);
 }

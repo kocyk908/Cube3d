@@ -163,12 +163,14 @@ void	clear_image(t_game *game);
 void	draw_map(t_game *game);
 void	put_pixel(int x, int y, int color, t_game *game);
 
-void	load_textures(t_game *game);
+int	load_textures(t_game *game);
 
 void	calculate_texture(t_game *game);
 void	perform_dda(t_game *game);
 void	draw_floor_and_ceiling(t_game *game);
 int		apply_fog(int color, double distance);
 int		rgb_to_int(int r, int g, int b);
+
+void free_textures(t_game *game);
 
 #endif
