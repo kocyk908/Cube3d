@@ -62,6 +62,17 @@ int	main(int argc, char **argv)
 	mlx_loop_hook(game.window.mlx_ptr, draw_loop, &game);
 	mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
 	mlx_loop(game.window.mlx_ptr);
+
+	mlx_clear_window(game.window.mlx_ptr, game.window.win_ptr);
+	mlx_destroy_window(game.window.mlx_ptr, game.window.win_ptr);
+	mlx_destroy_image(game.window.mlx_ptr, game.window.img);
+	mlx_destroy_display(game.window.mlx_ptr);
+	free(game.window.mlx_ptr);
+
+	free_map(game.map.board);
+	free_map(game.map.board_with_spaces);
+	free(game.map.file);
+
 	return (0);
 }
 

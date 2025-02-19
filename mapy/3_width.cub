@@ -1,4 +1,17 @@
-111
-1N1
-101
-111
+    NO sciana.xpm
+
+
+
+WE stone_bricks.xpm
+EA stone_bricks.xpm
+
+SO sciana.xpm
+
+F 0, 100,    100
+ C 125  ,50,30
+
+11111
+10001
+1N001
+10001
+11111
