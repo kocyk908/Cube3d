@@ -48,6 +48,10 @@ int	main(int argc, char **argv)
 	game.map.height = game.textures.height_util;
 	if (!is_map_valid(game))
 	{
+		free_map(game.map.board);
+		free_map(game.map.board_with_spaces);
+		free_map(game.map.file);
+		free_textures(&game);
 		printf("is_map_valid error\n");
 		return (0);
 	}
