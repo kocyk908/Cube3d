@@ -83,23 +83,23 @@ void	move_player(t_game *game)
 	new_y = 0;
 	if (game->player.right_rotate)
 	{
-		double oldDirX = game->player.dir_x;
+		double old_dirx = game->player.dir_x;
 		game->player.dir_x = game->player.dir_x * cos(angle_speed) - game->player.dir_y * sin(angle_speed);
-		game->player.dir_y = oldDirX * sin(angle_speed) + game->player.dir_y * cos(angle_speed);
+		game->player.dir_y = old_dirx * sin(angle_speed) + game->player.dir_y * cos(angle_speed);
 
-		double oldPlaneX = game->player.plane_x;
+		double old_planex = game->player.plane_x;
 		game->player.plane_x = game->player.plane_x * cos(angle_speed) - game->player.plane_y * sin(angle_speed);
-		game->player.plane_y = oldPlaneX * sin(angle_speed) + game->player.plane_y * cos(angle_speed);
+		game->player.plane_y = old_planex * sin(angle_speed) + game->player.plane_y * cos(angle_speed);
 	}
 	if (game->player.left_rotate)
 	{
-		double oldDirX = game->player.dir_x;
+		double old_dirx = game->player.dir_x;
 		game->player.dir_x = game->player.dir_x * cos(-angle_speed) - game->player.dir_y * sin(-angle_speed);
-		game->player.dir_y = oldDirX * sin(-angle_speed) + game->player.dir_y * cos(-angle_speed);
+		game->player.dir_y = old_dirx * sin(-angle_speed) + game->player.dir_y * cos(-angle_speed);
 
-		double oldPlaneX = game->player.plane_x;
+		double old_planex = game->player.plane_x;
 		game->player.plane_x = game->player.plane_x * cos(-angle_speed) - game->player.plane_y * sin(-angle_speed);
-		game->player.plane_y = oldPlaneX * sin(-angle_speed) + game->player.plane_y * cos(-angle_speed);
+		game->player.plane_y = old_planex * sin(-angle_speed) + game->player.plane_y * cos(-angle_speed);
 	}
 	if (game->player.key_up)
 	{
@@ -143,126 +143,151 @@ void	move_player(t_game *game)
 	}
 }
 
-void draw_line(t_player *player, t_game *game, double camera_x, int i)
+void	set_ray_direction(t_ray *ray, t_player *player, double camera_x)
 {
-	t_ray		*ray;
-	t_texture	*tex;
-	int			lineHeight;
-	int			drawStart;
-	int			drawEnd;
-	double		step;
-	double		texPos;
-	int			tex_y;
-	int			tex_offset;
-	int			y;
-	int			color;
-	
-	ray = &game->ray;
-	// Kierunek promienia (uwzględnia pole widzenia)
 	ray->dir_x = player->dir_x + player->plane_x * camera_x;
 	ray->dir_y = player->dir_y + player->plane_y * camera_x;
 	ray->map_x = (int)player->x;
 	ray->map_y = (int)player->y;
-
-	// Obliczenie wartości dla DDA
 	ray->delta_dist_x = fabs(1 / ray->dir_x);
 	ray->delta_dist_y = fabs(1 / ray->dir_y);
+}
 
+void	set_ray_steps(t_game *game)
+{
+	t_ray	*ray;
+
+	ray = &game->ray;
 	if (ray->dir_x < 0)
 	{
 		ray->step_x = -1;
-		ray->side_dist_x = (player->x - ray->map_x) * ray->delta_dist_x;
+		ray->side_dist_x = (game->player.x - ray->map_x) * ray->delta_dist_x;
 	}
 	else
 	{
 		ray->step_x = 1;
-		ray->side_dist_x = (ray->map_x + 1.0 - player->x) * ray->delta_dist_x;
+		ray->side_dist_x = (ray->map_x + 1.0
+				- game->player.x) * ray->delta_dist_x;
 	}
-
 	if (ray->dir_y < 0)
 	{
 		ray->step_y = -1;
-		ray->side_dist_y = (player->y - ray->map_y) * ray->delta_dist_y;
+		ray->side_dist_y = (game->player.y - ray->map_y) * ray->delta_dist_y;
 	}
 	else
 	{
 		ray->step_y = 1;
-		ray->side_dist_y = (ray->map_y + 1.0 - player->y) * ray->delta_dist_y;
+		ray->side_dist_y = (ray->map_y + 1.0
+				- game->player.y) * ray->delta_dist_y;
 	}
+}
 
-	// Wykonanie DDA do znalezienia ściany
+void	set_ray_direction_and_steps(t_ray *ray, t_player *player, double cam_x)
+{
+	ray->dir_x = player->dir_x + player->plane_x * cam_x;
+	ray->dir_y = player->dir_y + player->plane_y * cam_x;
+	ray->map_x = (int)player->x;
+	ray->map_y = (int)player->y;
+	ray->delta_dist_x = fabs(1 / ray->dir_x);
+	ray->delta_dist_y = fabs(1 / ray->dir_y);
 	ray->hit = 0;
-	perform_dda(game);
+}
 
-	// Obliczenie dystansu do ściany (zapobieganie dzieleniu przez zero lub bardzo małe wartości)
+void	calculate_wall_distance(t_ray *ray, t_player *player)
+{
 	if (ray->side == 0)
-		ray->perp_wall_dist = (ray->map_x - player->x + (1 - ray->step_x) / 2) / ray->dir_x;
+	{
+		ray->perp_wall_dist = (ray->map_x - player->x
+				+ (1 - ray->step_x) / 2) / ray->dir_x;
+	}
 	else
-		ray->perp_wall_dist = (ray->map_y - player->y + (1 - ray->step_y) / 2) / ray->dir_y;
-
-	// 🔥 Minimalna wartość dystansu, aby uniknąć błędów i "załamania" tekstur
+	{
+		ray->perp_wall_dist = (ray->map_y - player->y
+				+ (1 - ray->step_y) / 2) / ray->dir_y;
+	}
 	if (ray->perp_wall_dist < 0.01)
 		ray->perp_wall_dist = 0.01;
+}
 
-	// Obliczenie wysokości ściany
-	lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
+void	calculate_line_height_and_draw_positions(t_ray *ray)
+{
+	ray->line_height = (int)(HEIGHT / ray->perp_wall_dist);
+	ray->draw_start = -ray->line_height / 2 + HEIGHT / 2;
+	ray->draw_end = ray->line_height / 2 + HEIGHT / 2;
+	if (ray->draw_start < 0)
+		ray->draw_start = 0;
+	if (ray->draw_end >= HEIGHT)
+		ray->draw_end = HEIGHT - 1;
+}
 
-	// Korekta - jeśli linia jest dłuższa niż ekran, rysujemy poprawnie
-	drawStart = -lineHeight / 2 + HEIGHT / 2;
-	drawEnd = lineHeight / 2 + HEIGHT / 2;
-
-	// Jeśli ściana jest wyższa niż ekran, rysowanie zaczyna się powyżej ekranu
-	if (drawStart < 0) drawStart = 0;
-	if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
-
-	// Wybór tekstury na podstawie kierunku uderzenia
-	if (ray->side == 0)
-	{
-		if (ray->step_x > 0)
-			tex = &game->textures.east;
-		else
-			tex = &game->textures.west;
-	}
-	else
-	{
-		if (ray->step_y > 0)
-			tex = &game->textures.south;
-		else
-			tex = &game->textures.north;
-	}
+void	calculate_texture_position(t_ray *ray, t_player *player, t_texture *tex)
+{
 	if (ray->side == 0)
 		ray->wall_x = player->y + ray->perp_wall_dist * ray->dir_y;
 	else
 		ray->wall_x = player->x + ray->perp_wall_dist * ray->dir_x;
-
 	ray->wall_x -= floor(ray->wall_x);
 	ray->tex_x = (int)(ray->wall_x * (double)tex->width);
-
 	if (ray->side == 0 && ray->dir_x > 0)
 		ray->tex_x = tex->width - ray->tex_x - 1;
 	if (ray->side == 1 && ray->dir_y < 0)
 		ray->tex_x = tex->width - ray->tex_x - 1;
+}
 
-	// 🔹 Skalowanie tekstury dla bardzo wysokich ścian
-
-	//////////////////////////////////////////////////////////////////////////////////////////// od tego momentu naprawione zostało skalowanie tekstury gdy za blisko ściany
-	step = 1.0 * tex->height / lineHeight;
-	texPos = (drawStart - HEIGHT / 2 + lineHeight / 2) * step;
-
-	// Rysowanie ściany
-	y = drawStart;
-	while (y < drawEnd)
+t_texture	*choose_texture(t_ray *ray, t_textures *textures)
+{
+	if (ray->side == 0)
 	{
-		tex_y = (int)texPos & (tex->height - 1);  // Zapewnia poprawne indeksowanie tekstury
-		texPos += step;
+		if (ray->step_x > 0)
+			return (&textures->east);
+		else
+			return (&textures->west);
+	}
+	else
+	{
+		if (ray->step_y > 0)
+			return (&textures->south);
+		else
+			return (&textures->north);
+	}
+}
 
-		tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
-		color = *(int *)(tex->data + tex_offset);
+void	draw_line_segment(t_game *game, int i)
+{
+	t_texture	*tex;
+	double		tex_pos;
+	double		step;
+	int			y;
+	int			tex_y;
 
-		color = apply_fog(color, ray->perp_wall_dist);
-		put_pixel(i, y, color, game);
+	tex = choose_texture(&game->ray, &game->textures);
+	step = 1.0 * tex->height / (game->ray.draw_end - game->ray.draw_start);
+	tex_pos = (game->ray.draw_start - HEIGHT / 2
+			+ (game->ray.draw_end - game->ray.draw_start) / 2) * step;
+	y = game->ray.draw_start;
+	while (y < game->ray.draw_end)
+	{
+		tex_y = (int)tex_pos & (tex->height - 1);
+		tex_pos += step;
+		put_pixel(i, y, apply_fog(*(int *)(tex->data + (tex_y * tex->size_line
+						+ game->ray.tex_x
+						* (tex->bpp / 8))), game->ray.perp_wall_dist), game);
 		y++;
 	}
+}
+
+void	draw_line(t_player *player, t_game *game, double camera_x, int i)
+{
+	t_texture	*tex;
+
+	set_ray_direction_and_steps(&game->ray, player, camera_x);
+	set_ray_steps(game);
+	perform_dda(game);
+	calculate_wall_distance(&game->ray, player);
+	calculate_line_height_and_draw_positions(&game->ray);
+	tex = choose_texture(&game->ray, &game->textures);
+	calculate_texture_position(&game->ray, player, tex);
+	draw_line_segment(game, i);
 }
 
 int	draw_loop(t_game *game)

@@ -68,6 +68,10 @@ typedef struct s_ray
 	int			side; // 0 = pionowa ściana, 1 = pozioma ściana
 	double		wall_x; // Pozycja uderzenia w ścianę (do teksturowania)
 	int			tex_x; // Współrzędna X tekstury
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	double		step;
 }				t_ray;
 
 typedef struct s_map
