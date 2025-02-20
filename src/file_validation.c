@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/20 12:35:45 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 15:05:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,30 +59,25 @@ int	parse_texture(char *line, int j, char **texture)
 	int		len;
 	char	*new_texture;
 
+	len = 0;
+	new_texture = NULL;
 	j += 2;
 	while (line[j] == ' ')
 		j++;
-
-	new_texture = ft_strdup(&line[j]); // Store in a temporary variable
+	new_texture = ft_strdup(&line[j]);
 	if (!new_texture)
 	{
 		printf("Error: Memory allocation failed for texture\n");
 		return (0);
 	}
-
-	// Free the old texture before assigning a new one
 	if (*texture)
 		free(*texture);
-
 	*texture = new_texture;
-
 	len = ft_strlen(*texture);
 	if (len > 0 && (*texture)[len - 1] == '\n')
 		(*texture)[len - 1] = '\0';
-
 	return (1);
 }
-
 
 int	look_for_textures(t_game *game)
 {
@@ -148,7 +143,7 @@ int	look_for_textures(t_game *game)
 
 int	load_texture(t_game *game, t_texture *texture, char *path)
 {
-	int fd;
+	int		fd;
 
 	fd = 0;
 	if (!path)
@@ -163,23 +158,28 @@ int	load_texture(t_game *game, t_texture *texture, char *path)
 		return (0);
 	}
 	close(fd);
-	texture->img = mlx_xpm_file_to_image(game->window.mlx_ptr, path, &texture->width, &texture->height);
+	texture->img = mlx_xpm_file_to_image(game->window.mlx_ptr, path,
+			&texture->width, &texture->height);
 	if (!texture->img)
 	{
 		printf("Error: Failed to load texture from %s\n", path);
 		return (0);
 	}
-	texture->data = mlx_get_data_addr(texture->img, &texture->bpp, &texture->size_line, &texture->endian);
+	texture->data = mlx_get_data_addr(texture->img, &texture->bpp,
+			&texture->size_line, &texture->endian);
 	return (1);
 }
 
-
 int	load_textures(t_game *game)
 {
-	if (!load_texture(game, &game->textures.north, game->textures.north_texture) ||
-		!load_texture(game, &game->textures.south, game->textures.south_texture) ||
-		!load_texture(game, &game->textures.west, game->textures.west_texture) ||
-		!load_texture(game, &game->textures.east, game->textures.east_texture))
+	if (!load_texture(game, &game->textures.north,
+			game->textures.north_texture)
+		||!load_texture(game, &game->textures.south,
+			game->textures.south_texture)
+		|| !load_texture(game, &game->textures.west,
+			game->textures.west_texture)
+		|| !load_texture(game, &game->textures.east,
+			game->textures.east_texture))
 	{
 		printf("Error: Failed to load one or more textures.\n");
 		return (0);

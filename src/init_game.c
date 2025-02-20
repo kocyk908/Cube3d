@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 15:22:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 15:07:59 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,8 @@ int	init_window(t_game *game)
 	game->window.mlx_ptr = mlx_init();
 	if (game->window.mlx_ptr == NULL)
 		return (0);
-	game->window.win_ptr = mlx_new_window(game->window.mlx_ptr, WIDTH, HEIGHT, "Giereczka");
+	game->window.win_ptr = mlx_new_window(game->window.mlx_ptr,
+			WIDTH, HEIGHT, "Giereczka");
 	if (game->window.win_ptr == NULL)
 	{
 		free(game->window.mlx_ptr);
@@ -110,8 +111,10 @@ int	init_window(t_game *game)
 		free(game->window.img);
 		return (0);
 	}
-	game->window.data = mlx_get_data_addr(game->window.img, &game->window.bpp, &game->window.size_l, &game->window.endian);
-	mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr, game->window.img, 0, 0);
+	game->window.data = mlx_get_data_addr(game->window.img, &game->window.bpp,
+			&game->window.size_l, &game->window.endian);
+	mlx_put_image_to_window(game->window.mlx_ptr, game->window.win_ptr,
+		game->window.img, 0, 0);
 	return (1);
 }
 // Funkcja alokująca map

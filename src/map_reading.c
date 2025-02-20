@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/20 12:35:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 15:08:56 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ char	**read_file(char *file_path)
 		{
 			perror("Error allocating memory for line");
 			free(line);
-			free_map(file); // Free all previously allocated lines
+			free_map(file);
 			close(fd);
 			return (NULL);
 		}
