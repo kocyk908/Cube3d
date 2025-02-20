@@ -175,7 +175,9 @@ void	draw_floor_and_ceiling(t_game *game);
 int		apply_fog(int color, double distance);
 int		rgb_to_int(int r, int g, int b);
 
-void free_textures(t_game *game);
-void free_game_resources(t_game *game);
+char	**trim_empty_lines(char **file, int added_row);
+
+void	free_textures(t_game *game);
+void	free_game_resources(t_game *game);
 
 #endif

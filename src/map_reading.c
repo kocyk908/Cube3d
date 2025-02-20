@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/20 15:08:56 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 16:28:47 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,12 @@ int	count_rows(char *file_path)
 		return (-1);
 	}
 	row_count = 0;
-	while ((line = get_next_line(fd)))
+	line = get_next_line(fd);
+	while (line)
 	{
 		row_count++;
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
 	return (row_count);
@@ -106,34 +108,37 @@ char	**read_file(char *file_path)
 	char	*line;
 
 	added_row = 0;
-	file = NULL;
 	if (count_rows(file_path) < 0)
 		return (NULL);
-	line = NULL;
 	file = malloc(sizeof(char *) * (count_rows(file_path) + 1));
+	if (!file)
+		return (NULL);
 	fd = open(file_path, O_RDONLY);
 	if (fd < 0)
-	{
-		perror("Error opening file");
 		return (NULL);
-	}
-	while ((line = get_next_line(fd)))
+	line = get_next_line(fd);
+	while (line)
 	{
 		file[added_row] = ft_strdup(line);
-		if (!file[added_row])
-		{
-			perror("Error allocating memory for line");
-			free(line);
-			free_map(file);
-			close(fd);
-			return (NULL);
-		}
 		free(line);
-		added_row++;
+		if (!file[added_row++])
+			return (free_map(file), close(fd), NULL);
+		line = get_next_line(fd);
 	}
-	close(fd);
 	file[added_row] = NULL;
-	return (file);
+	return (close(fd), file);
+}
+
+void	init_read_map(int fd, int *added_row, char ***file, t_game *game)
+{
+	*added_row = 0;
+	*file = malloc(sizeof(char *)
+			* (count_rows((*game).map.file_path)
+				- (*game).textures.height_util + 1));
+	if (!*file)
+		return ;
+	while ((*game).textures.height_util--)
+		free(get_next_line(fd));
 }
 
 char	**read_map(t_game *game)
@@ -142,32 +147,30 @@ char	**read_map(t_game *game)
 	int		added_row;
 	char	**file;
 	char	*line;
-	int		i;
 
-	i = 0;
-	added_row = 0;
-	file = NULL;
-	line = NULL;
-	file = malloc(sizeof(char *) * ((count_rows(game->map.file_path)
-					- game->textures.height_util) + 1));
+	if (count_rows(game->map.file_path) < 0)
+		return (NULL);
 	fd = open(game->map.file_path, O_RDONLY);
 	if (fd < 0)
-	{
-		perror("Error opening file");
 		return (NULL);
-	}
-	while ((line = get_next_line(fd)))
+	init_read_map(fd, &added_row, &file, game);
+	if (!file)
+		return (close(fd), NULL);
+	line = get_next_line(fd);
+	while (line)
 	{
-		if (i < game->textures.height_util)
-		{
-			i++;
-			free(line);
-			continue ;
-		}
 		file[added_row++] = ft_strdup(line);
 		free(line);
+		line = get_next_line(fd);
 	}
 	close(fd);
+	file[added_row] = NULL;
+	return (trim_empty_lines(file, added_row));
+}
+
+// Usuwa puste linie na końcu
+char	**trim_empty_lines(char **file, int added_row)
+{
 	while (added_row > 0 && (file[added_row - 1][0] == '\n'
 		|| file[added_row - 1][0] == '\0'))
 	{
@@ -175,8 +178,6 @@ char	**read_map(t_game *game)
 		file[added_row - 1] = NULL;
 		added_row--;
 	}
-	game->textures.height_util = added_row;
-	file[added_row] = NULL;
 	return (file);
 }
 
