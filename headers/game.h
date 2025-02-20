@@ -109,7 +109,7 @@ typedef struct s_textures
 	int			ceiling_color[3]; // RGB dla C
 	double		final_floor_color;
 	double		final_ceiling_color;
-	int			height_util; // Liczba linii wczytanych przez GNL dla tekstur i kolorów (pozostale powinny być dla mapy)
+	int			height_util;
 }				t_textures;
 
 typedef struct s_window
@@ -159,7 +159,6 @@ char	**read_file(char *file_path);
 void	player_pos(t_game *game);
 
 // FUNKCJE Z FILMU
-void	draw_square(int x, int y, int size, int color, t_game *game);
 int		key_pressed(int command, t_game *game);
 int		key_release(int command, t_game *game);
 int		draw_loop(t_game *game);
@@ -167,7 +166,7 @@ void	clear_image(t_game *game);
 void	draw_map(t_game *game);
 void	put_pixel(int x, int y, int color, t_game *game);
 
-int	load_textures(t_game *game);
+int		load_textures(t_game *game);
 
 void	calculate_texture(t_game *game);
 void	perform_dda(t_game *game);
