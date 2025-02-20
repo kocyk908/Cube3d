@@ -179,4 +179,10 @@ char	**trim_empty_lines(char **file, int added_row);
 void	free_textures(t_game *game);
 void	free_game_resources(t_game *game);
 
+int		look_for_textures(t_game *game);
+int		load_texture(t_game *game, t_texture *texture, char *path);
+int		load_textures(t_game *game);
+int		read_textures(t_game *game);
+int		parse_texture_line(char *line, t_textures *textures);
+
 #endif
