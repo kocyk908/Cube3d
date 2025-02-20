@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/20 15:05:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 17:10:17 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,61 +79,66 @@ int	parse_texture(char *line, int j, char **texture)
 	return (1);
 }
 
+int	util(char *line, int j)
+{
+	if (line)
+	{
+		while (line[j] == ' ')
+			j++;
+	}
+	else
+		return (0);
+	return (j);
+}
+
+int	parse_texture_line(char *line, t_textures *textures)
+{
+	int	j;
+
+	j = util(line, 0);
+	if (line[j] == '\0' || line[j] == '\n')
+		return (0);
+	if (line[j] == 'N' && line[j + 1] == 'O' && line[j + 2] == ' '
+		&& textures->north_texture == NULL)
+		return (parse_texture(line, j, &textures->north_texture));
+	else if (line[j] == 'S' && line[j + 1] == 'O' && line[j + 2] == ' '
+		&& textures->south_texture == NULL)
+		return (parse_texture(line, j, &textures->south_texture));
+	else if (line[j] == 'W' && line[j + 1] == 'E' && line[j + 2] == ' '
+		&& textures->west_texture == NULL)
+		return (parse_texture(line, j, &textures->west_texture));
+	else if (line[j] == 'E' && line[j + 1] == 'A' && line[j + 2] == ' '
+		&& textures->east_texture == NULL)
+		return (parse_texture(line, j, &textures->east_texture));
+	else if (line[j] == 'F' && line[j + 1] == ' '
+		&& textures->floor_color[0] == -1)
+		return (parse_color(&line[j + 1], textures->floor_color));
+	else if (line[j] == 'C' && line[j + 1] == ' '
+		&& textures->ceiling_color[0] == -1)
+		return (parse_color(&line[j + 1], textures->ceiling_color));
+	return (-1);
+}
+
 int	look_for_textures(t_game *game)
 {
-	int		i;
-	int		j;
-	char	**file;
+	int	i;
+	int	result;
 
-	file = game->map.file;
 	i = 0;
-	while (file[i])
+	result = 0;
+	while (game->map.file[i])
 	{
-		j = 0;
-		while (file[i][j] == ' ')
-			j++;
-		if (file[i][j] == '\0' || file[i][j] == '\n')
+		result = parse_texture_line(game->map.file[i], &game->textures);
+		if (result == -1)
 		{
-			i++;
-			continue ;
-		}
-		if (file[i][j] == 'N' && file[i][j + 1] == 'O' && file[i][j + 2] == ' ' && game->textures.north_texture == NULL)
-		{
-			if (!parse_texture(file[i], j, &game->textures.north_texture))
-				return (-1);
-		}
-		else if (file[i][j] == 'S' && file[i][j + 1] == 'O' && file[i][j + 2] == ' ' && game->textures.south_texture == NULL)
-		{
-			if (!parse_texture(file[i], j, &game->textures.south_texture))
-				return (-1);
-		}
-		else if (file[i][j] == 'W' && file[i][j + 1] == 'E' && file[i][j + 2] == ' ' && game->textures.west_texture == NULL)
-		{
-			if (!parse_texture(file[i], j, &game->textures.west_texture))
-				return (-1);
-		}
-		else if (file[i][j] == 'E' && file[i][j + 1] == 'A' && file[i][j + 2] == ' ' && game->textures.east_texture == NULL)
-		{
-			if (!parse_texture(file[i], j, &game->textures.east_texture))
-				return (-1);
-		}
-		else if (file[i][j] == 'F' && file[i][j + 1] == ' ' && game->textures.floor_color[0] == -1)
-		{
-			j++;
-			if (!parse_color(&file[i][j], game->textures.floor_color))
-				return (-1);
-		}
-		else if (file[i][j] == 'C' && file[i][j + 1] == ' ' && game->textures.ceiling_color[0] == -1)
-		{
-			j++;
-			if (!parse_color(&file[i][j], game->textures.ceiling_color))
-				return (-1);
-		}
-		else
-		{
-			if (game->textures.north_texture != NULL && game->textures.south_texture != NULL && game->textures.west_texture != NULL && game->textures.east_texture != NULL && game->textures.floor_color[0] != -1 && game->textures.ceiling_color[0] != -1)
+			if (game->textures.north_texture != NULL
+				&& game->textures.south_texture != NULL
+				&& game->textures.west_texture != NULL
+				&& game->textures.east_texture != NULL
+				&& game->textures.floor_color[0] != -1
+				&& game->textures.ceiling_color[0] != -1)
 				return (i);
-			printf("Error: Invalid line in textures: %s or those are not textures\n ", file[i]);
+			printf("Error: Invalid line in textures: %s\n", game->map.file[i]);
 			return (-1);
 		}
 		i++;
