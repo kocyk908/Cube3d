@@ -1,5 +1,7 @@
 # Cube3d
 
+## return(close(fd), file) -> działa tak że jako wartość returna bierze ostatnią wartość po prawej
+
 # Główne zmiany 08.02
 ## **📌 Aktualizacja projektu – poprawki w kodzie**
 W tej aktualizacji wprowadziliśmy szereg **usprawnień w raycastingu**, eliminując błędy związane z **efektem rybiego oka, błędnym obrotem kamery** i poprawiając obsługę **FOV (pola widzenia)**.  
