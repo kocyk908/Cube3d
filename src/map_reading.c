@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/19 23:01:57 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 12:35:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,20 +219,4 @@ char	**map_with_spaces(t_game game)
 	}
 	new_map[i] = NULL;
 	return (new_map);
-}
-
-// Funkcja do zwolnienia pamięci mapy
-void	free_map(char **map)
-{
-	int		i;
-
-	i = 0;
-	if (!map)
-		return ;
-	while (map[i])
-	{
-		free(map[i]);
-		i++;
-	}
-	free(map);
 }

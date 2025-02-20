@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/19 23:16:42 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 12:35:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,6 @@ int	parse_color(char *line, int *color)
 		k++;
 	}
 	return (1);
-}
-
-void	free_textures(t_game *game)
-{
-	// Free MinilibX images if they were allocated
-	if (game->textures.north.img)
-		mlx_destroy_image(game->window.mlx_ptr, game->textures.north.img);
-	if (game->textures.south.img)
-		mlx_destroy_image(game->window.mlx_ptr, game->textures.south.img);
-	if (game->textures.west.img)
-		mlx_destroy_image(game->window.mlx_ptr, game->textures.west.img);
-	if (game->textures.east.img)
-		mlx_destroy_image(game->window.mlx_ptr, game->textures.east.img);
-
-	// Free texture paths (from `ft_strdup()`)
-	if (game->textures.north_texture)
-		free(game->textures.north_texture);
-	if (game->textures.south_texture)
-		free(game->textures.south_texture);
-	if (game->textures.west_texture)
-		free(game->textures.west_texture);
-	if (game->textures.east_texture)
-		free(game->textures.east_texture);
 }
 
 int	parse_texture(char *line, int j, char **texture)

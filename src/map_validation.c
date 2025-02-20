@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/17 19:29:16 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/20 12:36:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,6 @@ int	is_map_valid(t_game game)
 		return (0);
 	}
 	printf("mapa jest zamknięta poprawnie\n\n");
-
-	//free_map(game.map.board_with_spaces);
 	return (1);
 }
 

@@ -13,84 +13,60 @@
 #include "cube3d.h"
 #include "game.h"
 
+int	validate_and_load_map(t_game *game, char *file_path)
+{
+	game->map.file_path = file_path;
+	if (ft_strcmp(&file_path[ft_strlen(file_path) - 4], ".cub") != 0)
+		return (printf("Error: Invalid file extension\n"), 0);
+	game->map.file = read_file(file_path);
+	if (!game->map.file)
+	{
+		printf("Error: Failed to read file\n");
+		return (0);
+	}
+	if (!read_textures(game))
+	{
+		free_game_resources(game);
+		return (printf("Error: Failed to read textures\n"), 0);
+	}
+	game->map.board = read_map(game);
+	game->map.board_with_spaces = map_with_spaces(*game);
+	game->map.width = find_longest_row_length(game->map.board);
+	game->map.height = game->textures.height_util;
+	if (!is_map_valid(*game))
+	{
+		free_game_resources(game);
+		return (printf("Error: Invalid map\n"), 0);
+	}
+	player_pos(game);
+	return (1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_game	game;
 
 	if (argc != 2)
-	{
-		printf("Usage: %s <map_file>\n", argv[0]);
-		return (1);
-	}
+		return (printf("Usage: %s <map_file>\n", argv[0]), 1);
 	init_game(&game);
-	game.map.file_path = argv[1];
-	if (ft_strcmp(&game.map.file_path[ft_strlen(game.map.file_path) - 4], ".cub") != 0)
-	{
-		printf("Error: Invalid file extension\n");
-		return (1);
-	}
-	game.map.file = read_file(game.map.file_path);
-	if (game.map.file == NULL)
-	{
-		printf("Error: Failed to read file\n");
-		return (1);
-	}
-	if (!read_textures(&game))
-	{
-		free_map(game.map.file);
-		free_textures(&game);
-		printf("read_textures issue");
+	if (!validate_and_load_map(&game, argv[1]))
 		return (0);
-	}
-	game.map.board = read_map(&game);
-	game.map.board_with_spaces = map_with_spaces(game);
-	game.map.width = find_longest_row_length(game.map.board);
-	game.map.height = game.textures.height_util;
-	if (!is_map_valid(game))
-	{
-		free_map(game.map.board);
-		free_map(game.map.board_with_spaces);
-		free_map(game.map.file);
-		free_textures(&game);
-		printf("is_map_valid error\n");
-		return (0);
-	}
-	player_pos(&game);
 	if (!init_window(&game))
 	{
-		printf("Error: Failed to initialize window\n");
+		free_game_resources(&game);
 		return (1);
 	}
 	if (!load_textures(&game))
 	{
-		free_textures(&game);
-		free_map(game.map.board);
-		free_map(game.map.board_with_spaces);
-		free_map(game.map.file);
-		mlx_clear_window(game.window.mlx_ptr, game.window.win_ptr);
-		mlx_destroy_window(game.window.mlx_ptr, game.window.win_ptr);
-		mlx_destroy_image(game.window.mlx_ptr, game.window.img);
-		mlx_destroy_display(game.window.mlx_ptr);
-		free(game.window.mlx_ptr);
+		free_game_resources(&game);
 		return (1);
 	}
-	mlx_hook(game.window.win_ptr, 2, 1L<<0, key_pressed, &game); 
-	mlx_hook(game.window.win_ptr, 3, 1L<<1, key_release, &game);
+	mlx_hook(game.window.win_ptr, 2, 1L << 0, key_pressed, &game);
+	mlx_hook(game.window.win_ptr, 3, 1L << 1, key_release, &game);
 	mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
 	mlx_loop_hook(game.window.mlx_ptr, draw_loop, &game);
-	mlx_hook(game.window.win_ptr, 17, 0, close_window, &game);
 	mlx_loop(game.window.mlx_ptr);
-
-	mlx_clear_window(game.window.mlx_ptr, game.window.win_ptr);
-	mlx_destroy_window(game.window.mlx_ptr, game.window.win_ptr);
-	mlx_destroy_image(game.window.mlx_ptr, game.window.img);
-	mlx_destroy_display(game.window.mlx_ptr);
-	free(game.window.mlx_ptr);
-
-	free_map(game.map.board);
-	free_map(game.map.board_with_spaces);
-	free_map(game.map.file);
-
+	free_game_resources(&game);
 	return (0);
 }
 
@@ -169,8 +145,19 @@ void	move_player(t_game *game)
 
 void draw_line(t_player *player, t_game *game, double camera_x, int i)
 {
-	t_ray *ray = &game->ray;
-
+	t_ray		*ray;
+	t_texture	*tex;
+	int			lineHeight;
+	int			drawStart;
+	int			drawEnd;
+	double		step;
+	double		texPos;
+	int			tex_y;
+	int			tex_offset;
+	int			y;
+	int			color;
+	
+	ray = &game->ray;
 	// Kierunek promienia (uwzględnia pole widzenia)
 	ray->dir_x = player->dir_x + player->plane_x * camera_x;
 	ray->dir_y = player->dir_y + player->plane_y * camera_x;
@@ -218,18 +205,17 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
 		ray->perp_wall_dist = 0.01;
 
 	// Obliczenie wysokości ściany
-	int lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
+	lineHeight = (int)(HEIGHT / ray->perp_wall_dist);
 
 	// Korekta - jeśli linia jest dłuższa niż ekran, rysujemy poprawnie
-	int drawStart = -lineHeight / 2 + HEIGHT / 2;
-	int drawEnd = lineHeight / 2 + HEIGHT / 2;
+	drawStart = -lineHeight / 2 + HEIGHT / 2;
+	drawEnd = lineHeight / 2 + HEIGHT / 2;
 
 	// Jeśli ściana jest wyższa niż ekran, rysowanie zaczyna się powyżej ekranu
 	if (drawStart < 0) drawStart = 0;
 	if (drawEnd >= HEIGHT) drawEnd = HEIGHT - 1;
 
 	// Wybór tekstury na podstawie kierunku uderzenia
-	t_texture *tex;
 	if (ray->side == 0)
 	{
 		if (ray->step_x > 0)
@@ -244,8 +230,6 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
 		else
 			tex = &game->textures.north;
 	}
-
-	// Obliczenie współrzędnej X tekstury
 	if (ray->side == 0)
 		ray->wall_x = player->y + ray->perp_wall_dist * ray->dir_y;
 	else
@@ -262,18 +246,18 @@ void draw_line(t_player *player, t_game *game, double camera_x, int i)
 	// 🔹 Skalowanie tekstury dla bardzo wysokich ścian
 
 	//////////////////////////////////////////////////////////////////////////////////////////// od tego momentu naprawione zostało skalowanie tekstury gdy za blisko ściany
-	double step = 1.0 * tex->height / lineHeight;
-	double texPos = (drawStart - HEIGHT / 2 + lineHeight / 2) * step;
+	step = 1.0 * tex->height / lineHeight;
+	texPos = (drawStart - HEIGHT / 2 + lineHeight / 2) * step;
 
 	// Rysowanie ściany
-	int y = drawStart;
+	y = drawStart;
 	while (y < drawEnd)
 	{
-		int tex_y = (int)texPos & (tex->height - 1);  // Zapewnia poprawne indeksowanie tekstury
+		tex_y = (int)texPos & (tex->height - 1);  // Zapewnia poprawne indeksowanie tekstury
 		texPos += step;
 
-		int tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
-		int color = *(int *)(tex->data + tex_offset);
+		tex_offset = (tex_y * tex->size_line) + (ray->tex_x * (tex->bpp / 8));
+		color = *(int *)(tex->data + tex_offset);
 
 		color = apply_fog(color, ray->perp_wall_dist);
 		put_pixel(i, y, color, game);

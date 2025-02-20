@@ -172,5 +172,6 @@ int		apply_fog(int color, double distance);
 int		rgb_to_int(int r, int g, int b);
 
 void free_textures(t_game *game);
+void free_game_resources(t_game *game);
 
 #endif
