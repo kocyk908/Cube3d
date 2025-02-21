@@ -233,22 +233,24 @@ t_texture	*choose_texture(t_ray *ray, t_textures *textures)
 //{
 //	t_texture	*tex;
 //	double		tex_pos;
-//	double		step;
 //	int			y;
 //	int			tex_y;
+//	int			color;
+//	int		tex_offset;
 
 //	tex = choose_texture(&game->ray, &game->textures);
-//	step = 1.0 * tex->height / (game->ray.draw_end - game->ray.draw_start);
-//	tex_pos = (game->ray.draw_start - HEIGHT / 2
-//			+ (game->ray.draw_end - game->ray.draw_start) / 2) * step;
+//	tex_pos = (game->ray.draw_start - HEIGHT / 2 + game->ray.line_height / 2)
+//		* (1.0 * tex->height / game->ray.line_height);
 //	y = game->ray.draw_start;
 //	while (y < game->ray.draw_end)
 //	{
-//		tex_y = (int)tex_pos & (tex->height - 1);
-//		tex_pos += step;
-//		put_pixel(i, y, apply_fog(*(int *)(tex->data + (tex_y * tex->size_line
-//						+ game->ray.tex_x
-//						* (tex->bpp / 8))), game->ray.perp_wall_dist), game);
+//		tex_y = ((int)tex_pos) & (tex->height - 1);
+//		tex_pos += (1.0 * tex->height / game->ray.line_height);
+//		tex_offset = (tex_y * tex->size_line)
+//			+ (game->ray.tex_x * (tex->bpp / 8));
+//		color = *(int *)(tex->data + tex_offset);
+//		color = apply_fog(color, game->ray.perp_wall_dist);
+//		put_pixel(i, y, color, game);
 //		y++;
 //	}
 //}
@@ -256,37 +258,22 @@ t_texture	*choose_texture(t_ray *ray, t_textures *textures)
 void	draw_line_segment(t_game *game, int i)
 {
 	t_texture	*tex;
-	double		step;
 	double		tex_pos;
 	int			y;
 	int			tex_y;
+	int			color;
 
 	tex = choose_texture(&game->ray, &game->textures);
-
-	// Pobieramy poprawne wartości wyznaczone wcześniej
-	int lineHeight = game->ray.line_height;
-	int drawStart = game->ray.draw_start;
-	int drawEnd = game->ray.draw_end;
-
-	// Poprawne skalowanie tekstury
-	step = 1.0 * tex->height / lineHeight;
-	tex_pos = (drawStart - HEIGHT / 2 + lineHeight / 2) * step;
-
-	y = drawStart;
-	while (y < drawEnd)
+	tex_pos = (game->ray.draw_start - HEIGHT / 2 + game->ray.line_height / 2)
+		* (1.0 * tex->height / game->ray.line_height);
+	y = game->ray.draw_start;
+	while (y < game->ray.draw_end)
 	{
-		// Korekta indeksowania, aby unikać błędów z niepoprawnym pobieraniem piksela
 		tex_y = ((int)tex_pos) & (tex->height - 1);
-		tex_pos += step;
-
-		// Obliczanie przesunięcia w teksturze
-		int tex_offset = (tex_y * tex->size_line) + (game->ray.tex_x * (tex->bpp / 8));
-		int color = *(int *)(tex->data + tex_offset);
-
-		// Zastosowanie efektu mgły (opcjonalnie)
+		tex_pos += (1.0 * tex->height / game->ray.line_height);
+		color = *(int *)(tex->data + ((tex_y * tex->size_line)
+					+ (game->ray.tex_x * (tex->bpp / 8))));
 		color = apply_fog(color, game->ray.perp_wall_dist);
-
-		// Rysowanie piksela na ekranie
 		put_pixel(i, y, color, game);
 		y++;
 	}
