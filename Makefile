@@ -1,4 +1,4 @@
-NAME	:= cube3d
+NAME	:= cub3D
 
 CC	:= gcc
 

@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_game.c                                        :+:      :+:    :+:   */
+/*   init_player.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/21 13:05:10 by bkaleta          ###   ########.fr       */
+/*   Created: 2025/02/21 13:05:04 by bkaleta           #+#    #+#             */
+/*   Updated: 2025/02/21 13:05:09 by bkaleta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
-#include <stdlib.h>
-#include <string.h>
 
-int	init_game(t_game *game)
+void	init_player(t_player *player)
 {
-	init_map(&game->map);
-	init_player(&game->player);
-	init_textures(&game->textures);
-	return (1);
+	player->x = 0;
+	player->y = 0;
+	player->key_up = false;
+	player->key_down = false;
+	player->key_left = false;
+	player->key_right = false;
+	player->left_rotate = false;
+	player->right_rotate = false;
+	player->dir_x = 0;
+	player->dir_y = 0;
+	player->plane_x = 0;
+	player->plane_y = 0.66;
 }

@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_game.c                                        :+:      :+:    :+:   */
+/*   set_texture.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/21 13:05:10 by bkaleta          ###   ########.fr       */
+/*   Created: 2025/02/21 12:38:49 by bkaleta           #+#    #+#             */
+/*   Updated: 2025/02/21 12:39:04 by bkaleta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
-#include <stdlib.h>
-#include <string.h>
 
-int	init_game(t_game *game)
+t_texture	*choose_texture(t_ray *ray, t_textures *textures)
 {
-	init_map(&game->map);
-	init_player(&game->player);
-	init_textures(&game->textures);
-	return (1);
+	if (ray->side == 0)
+	{
+		if (ray->step_x > 0)
+			return (&textures->east);
+		else
+			return (&textures->west);
+	}
+	else
+	{
+		if (ray->step_y > 0)
+			return (&textures->south);
+		else
+			return (&textures->north);
+	}
 }

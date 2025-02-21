@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long_like.c                                     :+:      :+:    :+:   */
+/*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/16 14:57:57 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/21 13:15:37 by bkaleta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ int	key_pressed(int command, t_game *game)
 		game->player.left_rotate = true;
 	else if (command == RIGHT)
 		game->player.right_rotate = true;
+	else if (command == 65307)
+	{
+		close_window(game);
+		exit(0);
+	}
 	return (0);
 }
 
