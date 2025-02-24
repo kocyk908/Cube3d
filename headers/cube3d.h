@@ -22,8 +22,6 @@
 # include "libft.h"
 # include "stdbool.h"
 
-# include "biblio_helper.h"
-
 int		is_01senw(char **map);
 void	free_map(char **map);
 int		count_rows(char *file_path);
