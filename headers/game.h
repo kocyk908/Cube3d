@@ -133,88 +133,86 @@ typedef struct s_game
 	t_textures		textures; // Dane tekstur
 }				t_game;
 
-// Prototypy funkcji
-int		init_game(t_game *game);
-int		init_window(t_game *game);
-void	init_map(t_map *map);
-int		close_window(t_game *game);
-char	**map_with_spaces(t_game game);
-int		is_map_valid(t_game game);
-int		is_one_player(char **map);
-int		is_map_closed(t_game game);
-int		find_longest_row_length(char **map);
-int		is_map_closed_up(t_game game);
-int		is_map_closed_left(t_game game);
-int		is_map_closed_down(t_game game);
-int		is_map_closed_right(t_game game);
-
-int		are_all_ones_connected(t_game game);
-
-int		read_textures(t_game *game);
-int		ft_isspace(char c);
-
-char	**read_map(t_game *game);
-char	**read_file(char *file_path);
-
-void	player_pos(t_game *game);
-
-// FUNKCJE
-int		key_pressed(int command, t_game *game);
-int		key_release(int command, t_game *game);
-int		draw_loop(t_game *game);
-void	clear_image(t_game *game);
-void	draw_map(t_game *game);
-void	put_pixel(int x, int y, int color, t_game *game);
-
-int		load_textures(t_game *game);
-
-void	calculate_texture(t_game *game);
-void	perform_dda(t_game *game);
-void	draw_floor_and_ceiling(t_game *game);
-int		apply_fog(int color, double distance);
-int		rgb_to_int(int r, int g, int b);
-
-char	**trim_empty_lines(char **file, int added_row);
-
-void	free_textures(t_game *game);
-void	free_game_resources(t_game *game);
-
-int		look_for_textures(t_game *game);
-int		load_texture(t_game *game, t_texture *texture, char *path);
-int		load_textures(t_game *game);
-int		read_textures(t_game *game);
-int		parse_texture_line(char *line, t_textures *textures);
-// map_loader.c
-int		validate_and_load_map(t_game *game, char *file_path);
-
-// player_movement.c
-void	move_player(t_game *game);
-void	rotate_player(t_player *player, double angle);
-void	move_in_direction(t_player *player, t_map *map,
-			double move_x, double move_y);
-
-// raycasting.c
-void	set_ray_direction_and_steps(t_ray *ray, t_player *player, double cam_x);
-void	draw_line_segment(t_game *game, int i);
-int		draw_loop(t_game *game);
-
-//set_raycasting.c
-void	set_ray_steps(t_game *game);
-
-// calculate.c
-void	calculate_wall_distance(t_ray *ray, t_player *player);
-void	calculate_line_height_and_draw_positions(t_ray *ray);
-void	calculate_texture_position(t_ray *ray,
-			t_player *player, t_texture *tex);
-
 // set_texture.c
 t_texture	*choose_texture(t_ray *ray, t_textures *textures);
 
+// Prototypy funkcji
+int			init_game(t_game *game);
+int			init_window(t_game *game);
+void		init_map(t_map *map);
+int			close_window(t_game *game);
+char		**map_with_spaces(t_game game);
+int			is_map_valid(t_game game);
+int			is_one_player(char **map);
+int			is_map_closed(t_game game);
+int			find_longest_row_length(char **map);
+int			is_map_closed_up(t_game game);
+int			is_map_closed_left(t_game game);
+int			is_map_closed_down(t_game game);
+int			is_map_closed_right(t_game game);
+
+int			read_textures(t_game *game);
+int			ft_isspace(char c);
+
+char		**read_map(t_game *game);
+char		**read_file(char *file_path);
+
+void		player_pos(t_game *game);
+
+// FUNKCJE
+int			key_pressed(int command, t_game *game);
+int			key_release(int command, t_game *game);
+int			draw_loop(t_game *game);
+void		clear_image(t_game *game);
+void		draw_map(t_game *game);
+void		put_pixel(int x, int y, int color, t_game *game);
+
+int			load_textures(t_game *game);
+
+void		calculate_texture(t_game *game);
+void		perform_dda(t_game *game);
+void		draw_floor_and_ceiling(t_game *game);
+int			apply_fog(int color, double distance);
+
+char		**trim_empty_lines(char **file, int added_row);
+
+void		free_textures(t_game *game);
+void		free_game_resources(t_game *game);
+
+int			look_for_textures(t_game *game);
+int			load_texture(t_game *game, t_texture *texture, char *path);
+int			load_textures(t_game *game);
+int			read_textures(t_game *game);
+int			parse_texture_line(char *line, t_textures *textures);
+// map_loader.c
+int			validate_and_load_map(t_game *game, char *file_path);
+
+// player_movement.c
+void		move_player(t_game *game);
+void		rotate_player(t_player *player, double angle);
+void		move_in_direction(t_player *player, t_map *map,
+				double move_x, double move_y);
+
+// raycasting.c
+void		set_ray_direction_and_steps(t_ray *ray,
+				t_player *player, double cam_x);
+void		draw_line_segment(t_game *game, int i);
+int			draw_loop(t_game *game);
+
+//set_raycasting.c
+void		set_ray_steps(t_game *game);
+
+// calculate.c
+void		calculate_wall_distance(t_ray *ray, t_player *player);
+void		calculate_line_height_and_draw_positions(t_ray *ray);
+void		calculate_texture_position(t_ray *ray,
+				t_player *player, t_texture *tex);
+
 // init_textures.c
-void	init_textures(t_textures *textures);
-void	init_textures_util(t_texture *direction);
+void		init_textures(t_textures *textures);
+void		init_textures_util(t_texture *direction);
 
 // init_player.c
-void	init_player(t_player *player);
+void		init_player(t_player *player);
 
 #endif
