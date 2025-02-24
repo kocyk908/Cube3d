@@ -13,7 +13,7 @@
 #ifndef CUBE3D_H
 # define CUBE3D_H
 
-# include <mlx.h>
+# include <../minilibx-linux/mlx.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>

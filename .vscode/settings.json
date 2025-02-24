@@ -2,6 +2,7 @@
 	"files.associations": {
 		"map_validation": "cpp",
 		"cmath": "cpp",
-		"*.tcc": "cpp"
+		"*.tcc": "cpp",
+		"cube3d.h": "c"
 	}
 }
