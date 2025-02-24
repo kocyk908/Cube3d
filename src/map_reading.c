@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_reading.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/21 13:11:49 by bkaleta          ###   ########.fr       */
+/*   Updated: 2025/02/24 22:38:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ char	**read_map(t_game *game)
 	}
 	close(fd);
 	file[added_row] = NULL;
+	game->map.height = added_row;
 	return (trim_empty_lines(file, added_row));
 }
 
