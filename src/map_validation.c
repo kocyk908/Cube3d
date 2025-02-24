@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/20 12:36:18 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/24 18:13:52 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,16 @@ int	is_map_valid(t_game game)
 		printf("Error is_01SENW\n");
 		return (0);
 	}
-	printf("mapa składa się z dobrych znaków\n\n");
 	if (is_one_player(game.map.board) != 1)
 	{
-		printf("zla ilosc graczy \n");
+		printf("Wrong number of players\n");
 		return (0);
 	}
-	printf("jest 1 gracz\n\n");
 	if (!is_map_closed(game))
 	{
-		printf("mapa nie jest zamknięta\n");
+		printf("Map is not closed properly\n");
 		return (0);
 	}
-	printf("mapa jest zamknięta poprawnie\n\n");
 	return (1);
 }
 
@@ -94,22 +91,22 @@ int	is_map_closed(t_game game)
 {
 	if (!is_map_closed_up(game))
 	{
-		printf("mapa jest otwarta od góry\n");
+		printf("The map is open from the top\n");
 		return (0);
 	}
 	if (!is_map_closed_left(game))
 	{
-		printf("mapa jest otwarta od lewej\n");
+		printf("The map is open from the left side\n");
 		return (0);
 	}
 	if (!is_map_closed_down(game))
 	{
-		printf("mapa jest otwarta od dołu\n");
+		printf("The map is open from the bottom\n");
 		return (0);
 	}
 	if (!is_map_closed_right(game))
 	{
-		printf("mapa jest otwarta od prawej\n");
+		printf("The map is open from the right side\n");
 		return (0);
 	}
 	return (1);
