@@ -6,12 +6,11 @@
 /*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:41:01 by bkaleta           #+#    #+#             */
-/*   Updated: 2025/02/21 13:15:00 by bkaleta          ###   ########.fr       */
+/*   Updated: 2025/02/24 13:49:05 by bkaleta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "game.h"
-
 
 void	set_direction(t_player *player, int dir_x, int dir_y)
 {

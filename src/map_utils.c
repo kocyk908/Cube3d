@@ -6,7 +6,7 @@
 /*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:10:37 by bkaleta           #+#    #+#             */
-/*   Updated: 2025/02/21 13:12:04 by bkaleta          ###   ########.fr       */
+/*   Updated: 2025/02/24 13:49:38 by bkaleta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int	is_01senw(char **map)
 	}
 	return (1);
 }
+
 // Daje spacje żeby wyrównać długości rzędów do najdłuższego
 char	*fill_spaces(char *line, int max_row_len)
 {

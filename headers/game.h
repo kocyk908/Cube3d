@@ -190,7 +190,8 @@ int		validate_and_load_map(t_game *game, char *file_path);
 // player_movement.c
 void	move_player(t_game *game);
 void	rotate_player(t_player *player, double angle);
-void	move_in_direction(t_player *player, t_map *map, double move_x, double move_y);
+void	move_in_direction(t_player *player, t_map *map,
+			double move_x, double move_y);
 
 // raycasting.c
 void	set_ray_direction_and_steps(t_ray *ray, t_player *player, double cam_x);
@@ -203,7 +204,8 @@ void	set_ray_steps(t_game *game);
 // calculate.c
 void	calculate_wall_distance(t_ray *ray, t_player *player);
 void	calculate_line_height_and_draw_positions(t_ray *ray);
-void	calculate_texture_position(t_ray *ray, t_player *player, t_texture *tex);
+void	calculate_texture_position(t_ray *ray,
+			t_player *player, t_texture *tex);
 
 // set_texture.c
 t_texture	*choose_texture(t_ray *ray, t_textures *textures);
