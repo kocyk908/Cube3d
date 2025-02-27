@@ -1,0 +1,18 @@
+   NO wall1.xpm
+
+
+WE wall_colors.xpm
+
+
+EA wall_bricks.xpm
+
+SO wall2.xpm
+
+F 0, 100,    100
+ C 125  ,50,30
+
+ 11111
+ 10011
+ 11000111
+ 100E  1
+ 1111111

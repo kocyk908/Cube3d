@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_loader.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:30:09 by bkaleta           #+#    #+#             */
-/*   Updated: 2025/02/24 22:38:08 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/27 19:59:14 by lkoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,13 @@ int	validate_and_load_map(t_game *game, char *file_path)
 	}
 	game->map.board = read_map(game);
 	game->map.board_with_spaces = map_with_spaces(*game);
+	game->map.height = count_rows_map(game->map.board);
 	game->map.width = find_longest_row_length(game->map.board);
+	player_pos(game);
 	if (!is_map_valid(*game))
 	{
 		free_game_resources(game);
 		return (printf("Error: Invalid map\n"), 0);
 	}
-	player_pos(game);
 	return (1);
 }

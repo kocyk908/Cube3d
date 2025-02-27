@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/24 22:34:40 by marvin           ###   ########.fr       */
+/*   Updated: 2025/02/27 19:51:18 by lkoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	is_map_valid(t_game game)
 		printf("Wrong number of players\n");
 		return (0);
 	}
-	if (!is_map_closed(game))
+	if (!is_map_closed(&game))
 	{
 		printf("Map is not closed properly\n");
 		return (0);
@@ -87,27 +87,32 @@ int	is_one_player(char **map)
 	return (player_count);
 }
 
-int	is_map_closed(t_game game)
-{
-	if (!is_map_closed_up(game))
-	{
-		printf("The map is open from the top\n");
-		return (0);
-	}
-	if (!is_map_closed_left(game))
-	{
-		printf("The map is open from the left side\n");
-		return (0);
-	}
-	if (!is_map_closed_down(game))
-	{
-		printf("The map is open from the bottom\n");
-		return (0);
-	}
-	if (!is_map_closed_right(game))
-	{
-		printf("The map is open from the right side\n");
-		return (0);
-	}
-	return (1);
-}
+// int	is_map_closed(t_game game)
+// {
+// 	write(1, "is_map_closed\n", 14);
+// 	if (!is_map_closed_up(game))
+// 	{
+// 		printf("The map is open from the top\n");
+// 		return (0);
+// 	}
+// 	write(1, "up\n", 3);
+// 	if (!is_map_closed_left(game))
+// 	{
+// 		printf("The map is open from the left side\n");
+// 		return (0);
+// 	}
+// 	write(1, "left\n", 5);
+// 	if (!is_map_closed_down(game))
+// 	{
+// 		printf("The map is open from the bottom\n");
+// 		return (0);
+// 	}
+// 	write(1, "down\n", 5);
+// 	if (!is_map_closed_right(game))
+// 	{
+// 		printf("The map is open from the right side\n");
+// 		return (0);
+// 	}
+// 	write(1, "right\n", 6);
+// 	return (1);
+// }

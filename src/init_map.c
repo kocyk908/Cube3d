@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_map.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
+/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:04:42 by bkaleta           #+#    #+#             */
-/*   Updated: 2025/02/21 13:04:48 by bkaleta          ###   ########.fr       */
+/*   Updated: 2025/02/27 19:38:52 by lkoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,5 @@ void	init_map(t_map *map)
 	map->file = NULL;
 	map->board = NULL;
 	map->board_with_spaces = NULL;
+	map->error_border = 0;
 }

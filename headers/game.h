@@ -30,7 +30,7 @@
 
 # define PI 3.14159265359
 
-# define SPEED 0.05
+# define SPEED 0.03
 
 # include "cube3d.h"
 
@@ -82,6 +82,7 @@ typedef struct s_map
 	char		**file;
 	char		**board; // Reprezentacja mapy (np. tablica znaków '1', '0')
 	char		**board_with_spaces;
+	int			error_border;
 }				t_map;
 
 typedef struct s_texture
@@ -144,7 +145,7 @@ int			close_window(t_game *game);
 char		**map_with_spaces(t_game game);
 int			is_map_valid(t_game game);
 int			is_one_player(char **map);
-int			is_map_closed(t_game game);
+int			is_map_closed(t_game *game);
 int			find_longest_row_length(char **map);
 int			is_map_closed_up(t_game game);
 int			is_map_closed_left(t_game game);

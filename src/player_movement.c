@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   player_movement.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bkaleta <bkaleta@student.42warsaw.pl>      +#+  +:+       +#+        */
+/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 12:33:02 by bkaleta           #+#    #+#             */
-/*   Updated: 2025/02/21 12:36:47 by bkaleta          ###   ########.fr       */
+/*   Updated: 2025/02/27 15:50:12 by lkoc             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	move_player(t_game *game)
 	double	angle_speed;
 
 	speed = SPEED;
-	angle_speed = 0.05;
+	angle_speed = 0.02;
 	if (game->player.right_rotate)
 		rotate_player(&game->player, angle_speed);
 	if (game->player.left_rotate)
