@@ -1,5 +1,30 @@
 # Cube3d
 
+fajne
+void print_mapa(char **map, int height, int width)
+{
+    int i, j;
+    usleep(200000); // Opóźnienie 0.2s dla lepszej wizualizacji
+    printf("\033[H\033[J"); // Czyści ekran terminala
+
+    for (i = 0; i < height; i++)
+    {
+        for (j = 0; j < width; j++)
+        {
+            if (map[i][j] == 'V') // Oznaczamy odwiedzone pola jako '*'
+                printf("\033[1;34m*\033[0m "); // Niebieskie odwiedzone pola
+            else if (map[i][j] == 'E') // Gracz
+                printf("\033[1;32mE\033[0m "); // Zielony gracz
+            else if (map[i][j] == '1') // Ściana
+                printf("\033[1;31m1\033[0m "); // Czerwone ściany
+            else if (map[i][j] == '0' || map[i][j] == ' ') // Podłoga lub puste
+                printf("\033[1;37m%c\033[0m ", map[i][j]); // Białe podłogi
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 ## return(close(fd), file) -> działa tak że jako wartość returna bierze ostatnią wartość po prawej
 
 # Główne zmiany 08.02
