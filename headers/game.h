@@ -187,6 +187,7 @@ int			read_textures(t_game *game);
 int			parse_texture_line(char *line, t_textures *textures);
 // map_loader.c
 int			validate_and_load_map(t_game *game, char *file_path);
+int			count_rows_map(char **map);
 
 // player_movement.c
 void		move_player(t_game *game);
