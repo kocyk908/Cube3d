@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   border_validation.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/27 19:58:42 by lkoc             ###   ########.fr       */
+/*   Updated: 2025/02/28 10:05:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,12 @@ void	flood_fill(char **map, int x, int y, t_game *game)
 }
 
 // Funkcja sprawdzająca, czy mapa jest poprawnie zamknięta
-int	is_map_closed(t_game *game)
+int	is_map_closed(t_game *game, char **map)
 {
-	char	**map;
 	int		i;
 	int		j;
 
 	i = 0;
-	map = game->map.board_with_spaces;
 	game->map.error_border = 0;
 	while (i < game->map.height)
 	{
@@ -63,4 +61,29 @@ int	is_map_closed(t_game *game)
 		i++;
 	}
 	return (0);
+}
+
+int	are_borders_valid(t_game game)
+{
+	if (!is_map_closed_left(game))
+	{
+		printf("Map is not closed left\n");
+		return (0);
+	}
+	if (!is_map_closed_up(game))
+	{
+		printf("Map is not closed up\n");
+		return (0);
+	}
+	if (!is_map_closed_down(game))
+	{
+		printf("Map is not closed down\n");
+		return (0);
+	}
+	if (!is_map_closed_right(game))
+	{
+		printf("Map is not closed right\n");
+		return (0);
+	}
+	return (1);
 }

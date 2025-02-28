@@ -144,8 +144,9 @@ void		init_map(t_map *map);
 int			close_window(t_game *game);
 char		**map_with_spaces(t_game game);
 int			is_map_valid(t_game game);
+int			are_borders_valid(t_game game);
 int			is_one_player(char **map);
-int			is_map_closed(t_game *game);
+int			is_map_closed(t_game *game, char **map);
 int			find_longest_row_length(char **map);
 int			is_map_closed_up(t_game game);
 int			is_map_closed_left(t_game game);
@@ -216,5 +217,9 @@ void		init_textures_util(t_texture *direction);
 
 // init_player.c
 void		init_player(t_player *player);
+
+// leading_spaces.c
+int			count_leading_spaces(char **map, int height, int width);
+void		shift_map_left(char **map, int height, int width);
 
 #endif

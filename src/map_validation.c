@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_validation.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lkoc <lkoc@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:07:42 by lkoc              #+#    #+#             */
-/*   Updated: 2025/02/27 19:51:18 by lkoc             ###   ########.fr       */
+/*   Updated: 2025/02/28 09:10:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ int	has_empty_lines_between(char **map, int height)
 
 int	is_map_valid(t_game game)
 {
+	char	**map;
+
+	map = map_with_spaces(game);
 	if (!is_01senw(game.map.board))
 	{
 		printf("Error is_01SENW\n");
@@ -53,9 +56,14 @@ int	is_map_valid(t_game game)
 		printf("Wrong number of players\n");
 		return (0);
 	}
-	if (!is_map_closed(&game))
+	if (!is_map_closed(&game, map))
 	{
 		printf("Map is not closed properly\n");
+		return (0);
+	}
+	if (!are_borders_valid(game))
+	{
+		printf("Borders are not valid\n");
 		return (0);
 	}
 	return (1);
